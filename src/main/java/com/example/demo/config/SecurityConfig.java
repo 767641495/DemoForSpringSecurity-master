@@ -64,8 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // url 拦截
                 .authorizeRequests()
-                // login.html 不需要被认证
-                .antMatchers("/toLogin", "/swagger-ui").permitAll()
+                // login.html和swagger允许匿名访问
+                .antMatchers("/toLogin", "/swagger-ui/**").permitAll()
                 // 静态资源允许访问
                 .antMatchers(
                         HttpMethod.GET,
