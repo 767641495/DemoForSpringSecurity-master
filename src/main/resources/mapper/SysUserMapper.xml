@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SysUserMapper">
+
+    <resultMap id="SysUserResult" type="com.example.demo.domain.SysUser">
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="username"/>
+        <result property="password" column="password"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="selectUserByUserName" parameterType="string" resultMap="SysUserResult">
+        select *
+        from SysUser
+        <where>
+            <if test="userName != null">and username = #{userName}</if>
+        </where>
+    </select>
+
+    <insert id="insertUser" parameterType="com.example.demo.domain.SysUser">
+        insert into sysuser(username, password, phone, status)
+        VALUES (#{userName}, #{password}, #{phone}, #{status})
+    </insert>
+
+    <delete id="deleteUserByUserName" parameterType="string">
+        delete from SysUser
+        <where>
+            <if test="userName != null">and username = #{userName}</if>
+        </where>
+    </delete>
+
+    <update id="updatePasswordByUserName" parameterType="string">
+        update SysUser
+        <set>
+            <if test="password != null"></if>password = #{password}
+        </set>
+        <where>
+            <if test="userName != null"></if>and username = #{userName}
+        </where>
+
+    </update>
+</mapper>
