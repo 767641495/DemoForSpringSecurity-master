@@ -22,7 +22,7 @@ class DemoApplicationTests {
 
     @Test
     void testInsert() {
-        SysUser user = new SysUser("root", "root", "17366636923", "OK");
+        SysUser user = new SysUser("root3", "root", "17366636923", "OK");
         sysUserService.insertUser(user);
     }
 

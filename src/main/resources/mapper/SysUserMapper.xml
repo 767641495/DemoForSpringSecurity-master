@@ -13,8 +13,8 @@
     </resultMap>
 
     <select id="selectUserByUserName" parameterType="string" resultMap="SysUserResult">
-        select *
-        from SysUser
+        select user_id, username, password, phone, ip, device_ip, status
+        from sysuser
         <where>
             <if test="userName != null">and username = #{userName}</if>
         </where>
@@ -26,14 +26,14 @@
     </insert>
 
     <delete id="deleteUserByUserName" parameterType="string">
-        delete from SysUser
+        delete from sysuser
         <where>
             <if test="userName != null">and username = #{userName}</if>
         </where>
     </delete>
 
     <update id="updatePasswordByUserName" parameterType="string">
-        update SysUser
+        update sysuser
         <set>
             <if test="password != null"></if>password = #{password}
         </set>
