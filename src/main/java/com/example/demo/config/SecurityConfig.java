@@ -19,10 +19,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private MyAuthenticationSuccessHandler myAuthenctiationSuccessHandler;
+    private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
 
     @Autowired
-    private MyAuthenticationFailureHandler myAuthenctiationFailureHandler;
+    private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
     /**
      * anyRequest          |   匹配所有请求路径
@@ -53,19 +53,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successForwardUrl("/toMain")
                 // .successHandler(myAuthenticationFailureHandler)
                 // 此处是 post 请求,参数是登录失败后跳转地址
-                .failureForwardUrl("/error")
+                // .failureForwardUrl("/error")
                 // .failureHandler(myAuthenticationFailureHandler)
                 // 登陆界面
                 .loginPage("/login")
                 .and()
                 // 登出页面
                 .logout()
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/toLogin")
                 .and()
                 // url 拦截
                 .authorizeRequests()
                 // login.html 不需要被认证
-                .antMatchers("/toLogin").permitAll()
+                .antMatchers("/toLogin", "/swagger-ui").permitAll()
                 // 静态资源允许访问
                 .antMatchers(
                         HttpMethod.GET,
