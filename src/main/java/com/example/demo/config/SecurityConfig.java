@@ -56,8 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 // 登陆界面
                 .loginPage("/toLogin")
-                // 当发现/login 时认为是登录，需要执行 UserDetailsServiceImpl
-                // 这不是controller里的映射，是spring security自带的
+                // 当发现/authentication/form 时认为是登录，需要执行 UserDetailsServiceImpl
                 .loginProcessingUrl("/authentication/form")
                 // 此处是 post 请求,参数是登录成功后跳转地址
                 .successForwardUrl("/toMain")

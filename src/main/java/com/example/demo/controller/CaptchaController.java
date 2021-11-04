@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.pojo.AjaxResult;
 import com.example.demo.utils.CaptchaUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,9 @@ import java.io.IOException;
 public class CaptchaController {
 
     @ApiOperation("验证码生成")
-    @GetMapping(value = "/code")
-    public void genarateCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping(value = "/captchaImage")
+    public AjaxResult getCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        AjaxResult ajax = AjaxResult.success();
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
@@ -38,5 +40,6 @@ public class CaptchaController {
         //生成图片
         int w = 100, h = 30;
         CaptchaUtils.outputImage(w, h, response.getOutputStream(), verifyCode);
+        return ajax;
     }
 }
