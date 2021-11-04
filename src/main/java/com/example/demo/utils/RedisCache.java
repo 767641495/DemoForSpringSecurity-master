@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @create: 2021-11-04 20:01
  **/
 
-// @Component
+@Component
 public class RedisCache {
     @Autowired
     public RedisTemplate redisTemplate;

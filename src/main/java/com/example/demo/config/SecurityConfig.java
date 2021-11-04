@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.filter.CaptchaFilter;
+import com.example.demo.filter.IPFilter;
 import com.example.demo.utils.MyAuthenticationFailureHandler;
 import com.example.demo.utils.MyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CaptchaFilter captchaFilter;
 
+    @Autowired
+    private IPFilter ipFilter;
+
     /**
      * anyRequest          |   匹配所有请求路径
      * access              |   SpringEl表达式结果为true时可以访问
@@ -51,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http
+                .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
                 // 自定义表单认证
                 .formLogin()
