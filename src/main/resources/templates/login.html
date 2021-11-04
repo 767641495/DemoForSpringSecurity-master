@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=drive-width,initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="css/login.css">
     <!-- font-awesome 图标字体 http://www.fontawesome.com.cn/faicons/#web-application -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
           rel="stylesheet" type="text/css" th:href="@{css/login.css}">
@@ -40,11 +40,15 @@
 
             <label>
                 <input type="text" name="verify_code" placeholder="验证码">
-                <img src="/code" />
             </label>
         </div>
 
+        <div>
+            <img src="/code" />
+        </div>
+        <button type="button" onclick="window.location.href = '/toRegister'">注册</button>
         <input type="submit" value="Login"/>
+
     </form>
 </div>
 

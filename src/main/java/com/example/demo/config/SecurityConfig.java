@@ -51,10 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login")
                 // 此处是 post 请求,参数是登录成功后跳转地址
                 .successForwardUrl("/toMain")
-                // .successHandler(myAuthenticationFailureHandler)
+                .successHandler(myAuthenticationSuccessHandler)
                 // 此处是 post 请求,参数是登录失败后跳转地址
-                // .failureForwardUrl("/error")
-                // .failureHandler(myAuthenticationFailureHandler)
+                .failureForwardUrl("/error")
+                .failureHandler(myAuthenticationFailureHandler)
                 // 登陆界面
                 .loginPage("/login")
                 .and()
@@ -64,8 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // url 拦截
                 .authorizeRequests()
-                // login.html和swagger允许匿名访问
-                .antMatchers("/toLogin", "/swagger-ui/**", "/code").permitAll()
                 // 静态资源允许访问
                 .antMatchers(
                         HttpMethod.GET,
@@ -77,8 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/profile/**"
                 ).permitAll()
-                //所有的请求都必须被认证。必须登录后才能访问。
-                .anyRequest().authenticated()
+                // 所有的请求都必须被认证。必须登录后才能访问。
+                // .anyRequest().authenticated()
                 .and()
                 //关闭 csrf 防护
                 .csrf().disable();

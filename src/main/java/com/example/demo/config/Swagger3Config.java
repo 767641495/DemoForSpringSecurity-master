@@ -13,7 +13,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 /**
  * @program: DemoForSpringSecurity-master
- * @description: swaggar配置类
+ * @description: swagger配置类
  * @author: Riter
  * @create: 2021-11-02 20:30
  **/
