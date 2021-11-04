@@ -21,9 +21,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private ISysUserService userService;
 
-    @Autowired
-    private PasswordEncoder encoder;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SysUser sysUser = userService.selectUserByUserName(username);

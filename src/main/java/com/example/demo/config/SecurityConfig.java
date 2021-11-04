@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.filter.CaptchaFilter;
 import com.example.demo.utils.MyAuthenticationFailureHandler;
 import com.example.demo.utils.MyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,6 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+
+    @Autowired
+    private CaptchaFilter captchaFilter;
 
     /**
      * anyRequest          |   匹配所有请求路径
@@ -44,19 +49,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //首页所有人可以访问，功能页有相应权限才能访问
         //链式编程
 
-        // 自定义表单认证
-        http.formLogin()
+
+        http
+                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
+                // 自定义表单认证
+                .formLogin()
+                // 登陆界面
+                .loginPage("/toLogin")
                 // 当发现/login 时认为是登录，需要执行 UserDetailsServiceImpl
                 // 这不是controller里的映射，是spring security自带的
-                .loginProcessingUrl("/login")
+                .loginProcessingUrl("/authentication/form")
                 // 此处是 post 请求,参数是登录成功后跳转地址
                 .successForwardUrl("/toMain")
-                .successHandler(myAuthenticationSuccessHandler)
+                // .successHandler(myAuthenticationSuccessHandler)
                 // 此处是 post 请求,参数是登录失败后跳转地址
                 .failureForwardUrl("/error")
                 .failureHandler(myAuthenticationFailureHandler)
-                // 登陆界面
-                .loginPage("/login")
                 .and()
                 // 登出页面
                 .logout()
