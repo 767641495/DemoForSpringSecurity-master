@@ -46,12 +46,12 @@
     document.getElementById("myForm").onsubmit = function () {
       const name = document.getElementById("name").value;
       const pass1 = document.getElementById("pass1").value;
-      const psaa2 = document.getElementById("pass2").value;
+      const pass2 = document.getElementById("pass2").value;
       if(!name) {
         alert("用户名为空");
         return false;
       }
-      if (pass1 === psaa2) {
+      if (pass1 === pass2) {
         if (pass1 && pass2) {
           return true;
         }

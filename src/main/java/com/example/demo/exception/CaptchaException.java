@@ -8,5 +8,6 @@ import javax.security.sasl.AuthenticationException;
 public class CaptchaException extends AuthenticationException {
     public CaptchaException(String detail) {
         log.info(detail);
+        System.out.println(detail);
     }
 }
