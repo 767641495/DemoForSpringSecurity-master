@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.SysUser;
+import com.example.demo.entity.SysUser;
 
 public interface ISysUserService {
     SysUser selectUserByUserName(String userName);

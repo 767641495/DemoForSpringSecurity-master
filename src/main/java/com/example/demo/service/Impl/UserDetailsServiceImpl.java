@@ -1,6 +1,6 @@
 package com.example.demo.service.Impl;
 
-import com.example.demo.domain.SysUser;
+import com.example.demo.entity.SysUser;
 import com.example.demo.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;

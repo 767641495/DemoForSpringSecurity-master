@@ -1,4 +1,4 @@
-package com.example.demo.domain;
+package com.example.demo.pojo;
 
 import io.swagger.annotations.ApiModel;
 

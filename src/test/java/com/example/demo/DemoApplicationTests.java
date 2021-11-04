@@ -1,13 +1,10 @@
 package com.example.demo;
 
-import com.example.demo.domain.SysUser;
+import com.example.demo.entity.SysUser;
 import com.example.demo.service.ISysUserService;
-import com.example.demo.service.Impl.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest
 class DemoApplicationTests {

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.AjaxResult;
+import com.example.demo.pojo.AjaxResult;
 import com.example.demo.utils.IdUtils;
 import com.google.code.kaptcha.Producer;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;

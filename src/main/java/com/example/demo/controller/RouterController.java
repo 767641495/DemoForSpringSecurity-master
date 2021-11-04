@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.AjaxResult;
-import com.example.demo.domain.SysUser;
+import com.example.demo.pojo.AjaxResult;
+import com.example.demo.entity.SysUser;
 import com.example.demo.service.ISysUserService;
 import com.example.demo.utils.VerifyCodeUtils;
 import io.swagger.annotations.Api;
