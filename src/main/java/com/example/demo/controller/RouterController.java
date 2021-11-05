@@ -51,4 +51,9 @@ public class RouterController {
     public String toMain() {
         return "main";
     }
+
+    @GetMapping("/toHide")
+    public String toHide() {
+        return "hide";
+    }
 }

@@ -3,15 +3,13 @@
   padding: 0;
 }
 body{
-  background: url('../background/background2.jpg');
-  background-repeat: no-repeat;
+  background: url('../background/background1.jpg') no-repeat;
   background-size: 100% auto;
 }
 #login-box{
   width: 30%;
   height: auto;
-  margin: 0 auto;
-  margin-top: 15%;
+  margin: 15% auto 0;
   text-align: center;
   background: #00000060;
   padding: 20px 50px;
@@ -23,7 +21,16 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width:260px;
 }
+
+#login-box .form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 #login-box .form i{
   font-size: 18px;
   color: #fff;
@@ -49,6 +56,14 @@ body{
   height: 30px;
   width: 50px;
   margin: 0 20px 0 20px;
+  opacity: 0.5;
+}
+#phone-code {
+  width: 40%;
+}
+#get-phone-code {
+  width: 40%;
+  height: 50px;
   opacity: 0.5;
 }
 .prompt {

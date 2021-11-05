@@ -83,19 +83,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // url 拦截
                 .authorizeRequests()
-                // 静态资源允许访问
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/",
-                        "/*.html",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/**/*.jpg",
-                        "/profile/**"
-                ).permitAll()
                 // 所有的请求都必须被认证。必须登录后才能访问。
-                // .anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 //关闭 csrf 防护
                 .csrf().disable();
@@ -131,6 +120,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         //这个免拦截 能免 所有Security 中的拦截器  antMatchers(passUrls).permitAll() 这个免拦截 只是免当前拦截器
-        web.ignoring().antMatchers("/login.html");
+        web.ignoring().antMatchers(
+                "/",
+                "/*.html",
+                "/**/*.html",
+                "/**/*.css",
+                "/**/*.js",
+                "/**/*.jpg",
+                "/profile/**",
+                "/captchaImage",
+                "/captchaPhone",
+                "/checkCode",
+                "/toRegister",
+                "/toLogin",
+                "/swagger-ui/**"
+        );
     }
 }

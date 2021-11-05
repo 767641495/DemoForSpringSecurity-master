@@ -5,10 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=drive-width,initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="stylesheet" href="css/regist.css">
-  <!-- font-awesome 图标字体 http://www.fontawesome.com.cn/faicons/#web-application -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
-    rel="stylesheet" type="text/css" th:href="@{css/regist.css}">
+  <link rel="stylesheet" href="./css/register.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    rel="stylesheet" th:href="@{css/regist.css}">
   <title>Register</title>
 </head>
 
@@ -16,61 +15,113 @@
   <div id="login-box">
     <h1>Regist</h1>
     <div class="form">
-      <form id="myForm" action="/register" method="post" class="form">
-        <span class="prompt">请输入用户名</span>
-        <div class="item">
-          <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-          <label>
-            <input id="name" name="username" type="text" placeholder="Username" />
-          </label>
-        </div>
-        <span class="prompt">请输入密码</span>
-        <div class="item">
-          <i class="fa fa-key" aria-hidden="true"></i>
-          <label>
-            <input id="pass1" name="password" type="password" placeholder="Password">
-          </label>
-        </div>
-        <span class="prompt">请再次输入密码</span>
-        <div class="item">
-          <i class="fa fa-key" aria-hidden="true"></i>
-          <label>
-            <input id="pass2" type="password" placeholder="Password">
-          </label>
-        </div>
-
-        <span class="prompt">请输入手机号码</span>
-        <div class="item">
-          <i class="fa fa-key" aria-hidden="true"></i>
-          <label>
-            <input id="phone" type="text" placeholder="手机号码">
-          </label>
-        </div>
-
-        <input type="submit" id="regist-button" class="regist-button" value="注册" \>
-      </form>
+      <span class="prompt">请输入用户名</span>
+      <div class="item">
+        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+          <input id="name" name="username" type="text" placeholder="Username" />
+      </div>
+      <span class="prompt">请输入密码</span>
+      <div class="item">
+        <i class="fa fa-key" aria-hidden="true"></i>
+          <input id="pass1" name="password" type="password" placeholder="Password">
+      </div>
+      <span class="prompt">请再次输入密码</span>
+      <div class="item">
+        <i class="fa fa-key" aria-hidden="true"></i>
+          <input id="pass2" type="password" placeholder="Password">
+      </div>
+      <span class="prompt">请输入手机号</span>
+      <div class="item">
+        <i class="fa fa-key" aria-hidden="true"></i>
+          <input id="phone" type="text" placeholder="Phone">
+      </div>
+      <span class="prompt">请输入验证码</span>
+      <div class="item">
+          <input id="phone-code" type="text" placeholder="PhoneCode">
+          <button id="get-phone-code">获取验证码</button>
+      </div>
+      <div class="buttons">
+        <button type="button" id="regist-button">注册</button>
+        <button type="button" onclick="window.location.href = '/toLogin'">返回</button>
+      </div>
     </div>
   </div>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.4/qs.min.js"></script>
   <script>
-    document.getElementById("myForm").onsubmit = function () {
+    document.getElementById("get-phone-code").onclick = function () {
+        let i = 60;
+        document.getElementById("get-phone-code").disabled=true;
+        const clock = () => {
+            document.getElementById("get-phone-code").innerHTML = `${i--}秒后可重发验证码`;
+            console.log(i);
+        }
+        const clockInter = setInterval(clock,1000);
+        const over = () => {
+          clearInterval(clockInter);
+          document.getElementById("get-phone-code").disabled=false;
+          document.getElementById("get-phone-code").innerHTML = "获取验证码";
+        }
+        setTimeout(over,60000);
+        axios({
+            method: 'get',
+            url: '/captchaPhone',
+        }).then ((res)=>{
+            console.log(res);
+        })
+    }
+    document.getElementById("regist-button").onclick = function () {
       const name = document.getElementById("name").value;
       const pass1 = document.getElementById("pass1").value;
       const pass2 = document.getElementById("pass2").value;
-      if(!name) {
+      const phone = document.getElementById(("phone")).value;
+      if (!name) {
         alert("用户名为空");
-        return false;
-      }
-      if (pass1 === pass2) {
+      } else if (!phone) {
+        alert("手机号为空");
+      } else if (phone.length < 11) {
+        alert("手机号有误");
+        document.getElementById("phone").value = '';
+      } else if (pass1 === pass2) {
         if (pass1 && pass2) {
-          return true;
+          let data = Qs.stringify({
+            'password': pass1,
+            'phone': phone,
+            'userName': name,
+          })
+          axios({
+            method: 'post',
+            url: '/register',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data,
+          }).then ((res)=> {
+              console.log(res);
+              alert("注册成功");
+              window.location.href = '/toLogin'
+          }).catch((error)=>{
+              if (error.response) {
+                  alert("该用户名已存在")
+                  console.log(error.response.data);
+              } else if (error.request) {
+                  console.log(error.request);
+              } else {
+                  console.log('Error', error.message);
+              }
+              document.getElementById("name").value = '';
+              document.getElementById("pass1").value = '';
+              document.getElementById("pass2").value = '';
+              document.getElementById("phone").value = '';
+          });
+        } else {
+          alert("密码为空");
         }
-        alert("密码为空");
       } else {
         alert("两次输入的密码不一致");
+          document.getElementById("pass1").value = '';
+          document.getElementById("pass2").value = '';
       }
-      document.getElementById("pass1").value = '';
-      document.getElementById("pass2").value = '';
-      return false;
     }
   </script>
 </body>

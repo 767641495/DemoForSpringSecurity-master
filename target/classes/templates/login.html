@@ -1,56 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=drive-width,initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="css/login.css">
-    <!-- font-awesome 图标字体 http://www.fontawesome.com.cn/faicons/#web-application -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
-          rel="stylesheet" type="text/css" th:href="@{css/login.css}">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=drive-width,initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./css/login.css">
+  <!-- font-awesome 图标字体 http://www.fontawesome.com.cn/faicons/#web-application -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
+        rel="stylesheet" type="text/css" th:href="@{css/login.css}">
+  <title>Login</title>
 </head>
 
 
 <body>
-
-
-
-
 <div id="login-box">
-    <h1>Login</h1>
-    <form action="/authentication/form" method="post" class="form">
-        <div class="item">
-            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-            <label>
-                <input type="text" name="username" placeholder="账号"/>
-            </label>
-        </div>
+  <h1>Login</h1>
+  <form action="/authentication/form" method="post" class="form">
+    <div class="item">
+      <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+      <label>
+        <input type="text" name="username" placeholder="账号"/>
+      </label>
+    </div>
 
-        <div class="item">
-            <i class="fa fa-key" aria-hidden="true"></i>
+    <div class="item">
+      <i class="fa fa-key" aria-hidden="true"></i>
 
-            <label>
-                <input type="password" name="password" placeholder="密码">
-            </label>
-        </div>
-y
-        <div class="item">
-            <i class="fa fa-key" aria-hidden="true"></i>
+      <label>
+        <input type="password" name="password" placeholder="密码">
+      </label>
+    </div>
+    y
+    <div class="item">
+      <i class="fa fa-key" aria-hidden="true"></i>
 
-            <label>
-                <input type="text" name="captcha" placeholder="验证码">
-            </label>
-        </div>
+      <label>
+        <input type="text" name="captcha" placeholder="验证码">
+      </label>
+    </div>
 
-        <div>
-            <img src="/captchaImage"  alt="验证码"/>
-        </div>
-        <button type="button" onclick="window.location.href = '/toRegister'">注册</button>
-        <input type="submit" value="Login"/>
+    <div>
+      <img src="/captchaImage"  alt="验证码" id="code"/>
+    </div>
 
-    </form>
+    <div class="buttons">
+      <input type="submit" value="登录" />
+      <button type="button" onclick="window.location.href = '/toRegister'">注册</button>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+      document.getElementById("code").onclick = function () {
+        axios({
+          method: 'get',
+          url: '/captchaImage',
+          responseType: 'blob',
+        }).then ((res)=>{
+          document.getElementById("code").src =  window.URL.createObjectURL(res.data);
+        })
+      }
+    </script>
+  </form>
 </div>
 
 </body>
+
 </html>
