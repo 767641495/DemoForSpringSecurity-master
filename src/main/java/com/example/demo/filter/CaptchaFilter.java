@@ -1,6 +1,9 @@
 package com.example.demo.filter;
 
+import com.example.demo.pojo.Constants;
+import com.example.demo.utils.RedisCache;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,6 +17,7 @@ import java.io.IOException;
 
 @Component
 public class CaptchaFilter extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         // /authentication/form是认证时的请求接口，验证码校验只需要匹配这个接口即可
@@ -50,6 +54,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
         }
         // 校验成功之后，从session中移除验证码
         session.removeAttribute("captcha");
+
         return "success";
     }
 }

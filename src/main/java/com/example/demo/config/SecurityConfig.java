@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/authentication/form")
                 // 此处是 post 请求,参数是登录成功后跳转地址
                 .successForwardUrl("/toMain")
-                //.successHandler(myAuthenticationSuccessHandler).permitAll()
+                // .successHandler(myAuthenticationSuccessHandler).permitAll()
                 // 此处是 post 请求,参数是登录失败后跳转地址
                 .failureForwardUrl("/error")
                 .failureHandler(myAuthenticationFailureHandler).permitAll()
