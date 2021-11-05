@@ -42,11 +42,16 @@ public class CaptchaController {
         response.setDateHeader("Expires", 0);
         response.setContentType("image/jpeg");
 
+        // 保存验证码信息
+        String uuid = UUID.randomUUID().toString();
+        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
         // 生成随机字串
         String verifyCode = CaptchaUtils.generateVerifyCode(4);
+        log.info(verifyCode);
         // 存入会话session
         HttpSession session = request.getSession(true);
-        session.setAttribute("captcha", verifyCode.toLowerCase());
+        session.setAttribute("uuid", uuid);
+        redisCache.setCacheObject(verifyKey, verifyCode, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
         //生成图片
         int w = 100, h = 30;
         CaptchaUtils.outputImage(w, h, response.getOutputStream(), verifyCode);

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Api("路由")
 @Controller
@@ -37,6 +38,7 @@ public class RouterController {
 
     @ApiOperation("注册用户")
     @PostMapping("/register")
+    @ResponseBody
     public AjaxResult toRegister(SysUser sysUser) {
         if(sysUserService.insertUser(sysUser)) {
             return AjaxResult.success(sysUser.getUserName() + "注册成功！");

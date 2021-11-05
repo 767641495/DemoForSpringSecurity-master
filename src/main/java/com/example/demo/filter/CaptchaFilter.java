@@ -18,6 +18,9 @@ import java.io.IOException;
 @Component
 public class CaptchaFilter extends OncePerRequestFilter {
 
+    @Autowired
+    private RedisCache redisCache;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         // /authentication/form是认证时的请求接口，验证码校验只需要匹配这个接口即可
@@ -36,8 +39,12 @@ public class CaptchaFilter extends OncePerRequestFilter {
 
     private String validate(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        // 从session中获取验证码
-        Object captcha = session.getAttribute("captcha");
+
+        String uuid = session.getAttribute("uuid").toString();
+        //设置redis的key，这里设置为项目名:使用的字段:用户Id
+        String redisKey = Constants.CAPTCHA_CODE_KEY + uuid;
+        String captcha = redisCache.getCacheObject(redisKey);
+
         // 从客户端接收到的验证码
         String captchaParam = request.getParameter("captcha");
 
