@@ -58,16 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //首页所有人可以访问，功能页有相应权限才能访问
         //链式编程
 
-        http
-                .sessionManagement()
-                .invalidSessionStrategy((httpServletRequest, httpServletResponse) -> {
-                    httpServletResponse.setContentType("application/json;charset=utf-8");
-                    PrintWriter out = httpServletResponse.getWriter();
-                    out.write(JSONObject.toJSONString("身份失效了"));
-                    out.flush();
-                    out.close();
-                }).maximumSessions(1);
-        //这个地方可以设置一个账号每次能几个人登录同时登录 将maximumSessions 去掉那就是没限制 这个方我默认的是一个账号每次都一个人登录
 
         http
                 .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
@@ -93,13 +83,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // url 拦截
                 .authorizeRequests()
+                // 静态资源允许访问
+                .antMatchers(
+                        HttpMethod.GET,
+                        "/",
+                        "/*.html",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/**/*.jpg",
+                        "/profile/**"
+                ).permitAll()
                 // 所有的请求都必须被认证。必须登录后才能访问。
                 // .anyRequest().authenticated()
                 .and()
                 //关闭 csrf 防护
                 .csrf().disable();
 
-
+        http
+                .sessionManagement()
+                .invalidSessionStrategy((httpServletRequest, httpServletResponse) -> {
+                    httpServletResponse.setContentType("application/json;charset=utf-8");
+                    PrintWriter out = httpServletResponse.getWriter();
+                    out.write(JSONObject.toJSONString("身份失效了"));
+                    out.flush();
+                    out.close();
+                }).maximumSessions(1);
+        //这个地方可以设置一个账号每次能几个人登录同时登录 将maximumSessions 去掉那就是没限制 这个方我默认的是一个账号每次都一个人登录
     }
 
     /**
@@ -121,17 +131,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         //这个免拦截 能免 所有Security 中的拦截器  antMatchers(passUrls).permitAll() 这个免拦截 只是免当前拦截器
-        web.ignoring().antMatchers("/toRegister", "/toLogin", "/swagger-ui/**");
-        web.ignoring().antMatchers(
-                HttpMethod.GET,
-                "/",
-                "/*.html",
-                "/**/*.html",
-                "/**/*.css",
-                "/**/*.js",
-                "/**/*.jpg",
-                "/profile/**"
-        );
-
+        web.ignoring().antMatchers("/login.html");
     }
 }
