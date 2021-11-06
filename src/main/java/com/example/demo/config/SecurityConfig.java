@@ -75,6 +75,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureForwardUrl("/error")
                 .failureHandler(myAuthenticationFailureHandler).permitAll()
                 .and()
+                .rememberMe()
+                // 单位秒
+                .tokenValiditySeconds(60 * 2)
+                .and()
                 // 登出页面
                 .logout()
                 .logoutSuccessUrl("/toLogin")
