@@ -133,7 +133,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/checkCode",
                 "/toRegister",
                 "/toLogin",
-                "/swagger-ui/**"
+                "/swagger-ui/index.html"
         );
     }
 }

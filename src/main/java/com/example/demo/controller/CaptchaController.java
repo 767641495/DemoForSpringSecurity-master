@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,7 +48,7 @@ public class CaptchaController {
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
         // 生成随机字串
         String verifyCode = CaptchaUtils.generateVerifyCode(4);
-        log.info(verifyCode);
+        log.info("图形验证码" + verifyCode);
         // 存入会话session
         HttpSession session = request.getSession(true);
         session.setAttribute("uuid", uuid);
@@ -59,13 +60,13 @@ public class CaptchaController {
 
     @ApiOperation("手机验证码生成")
     @GetMapping(value = "/captchaPhone")
-    public void getPhoneCaptcha(HttpServletRequest request) {
+    public void getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) {
         // 保存验证码信息
         String uuid = UUID.randomUUID().toString();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
         // 生成随机字串
         String verifyCode = CaptchaUtils.generateMathCode(8);
-        log.info(verifyCode);
+        log.info("手机验证码："+ verifyCode);
         // 存入会话session
         HttpSession session = request.getSession(true);
         session.setAttribute("uuid", uuid);

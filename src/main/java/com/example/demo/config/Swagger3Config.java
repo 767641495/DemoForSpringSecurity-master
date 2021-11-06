@@ -32,8 +32,8 @@ public class Swagger3Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Swagger3接口文档")
-                .description("更多请咨询服务开发者Ray。")
-                .contact(new Contact("Ray。", "http://www.ruiyeclub.cn", "ruiyeclub@foxmail.com"))
+                .description("HDU_字节跳动_安全项目")
+                .contact(new Contact("HZH", "https://blog.csdn.net/HDUCheater", "767641495@qq.com"))
                 .version("1.0")
                 .build();
     }

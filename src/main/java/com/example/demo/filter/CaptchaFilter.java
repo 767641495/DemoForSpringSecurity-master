@@ -56,7 +56,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
             return "验证码不存在";
         }
 
-        if (!StringUtils.equalsAnyIgnoreCase(captcha.toString(), captchaParam)) {
+        if (!StringUtils.equalsAnyIgnoreCase(captcha, captchaParam)) {
             return "验证码不匹配";
         }
         // 校验成功之后，从session中移除验证码
