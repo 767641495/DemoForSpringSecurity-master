@@ -9,5 +9,7 @@ public interface ISysUserService {
 
     boolean deleteUserByUserName(String userName);
 
+    boolean deleteUserByUserId(Long userId);
+
     boolean updatePasswordByUserName(String userName, String password);
 }

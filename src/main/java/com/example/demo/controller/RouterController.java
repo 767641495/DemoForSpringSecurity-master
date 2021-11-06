@@ -14,12 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Api("路由")
 @Controller
 public class RouterController {
-
-    @Autowired
-    private ISysUserService sysUserService;
 
     @ApiOperation("访问登陆页面")
     @GetMapping({"/", "/toLogin"})
@@ -39,16 +35,6 @@ public class RouterController {
         return "error";
     }
 
-    @ApiOperation("注册用户")
-    @PostMapping("/register")
-    @ResponseBody
-    public AjaxResult toRegister(SysUser sysUser) {
-        if (sysUserService.insertUser(sysUser)) {
-            return AjaxResult.success(sysUser.getUserName() + "注册成功！");
-        }
-        return AjaxResult.error(sysUser.getUserName() + "注册失败！");
-    }
-
     @ApiOperation("访问主页")
     @PostMapping("/toMain")
     public String toMain() {
@@ -65,14 +51,5 @@ public class RouterController {
     @GetMapping("/toHide")
     public String toHide() {
         return "hide";
-    }
-
-    @ApiOperation("获取信息")
-    @GetMapping("/getInfo")
-    @ResponseBody
-    public AjaxResult getInfo(HttpServletRequest request) {
-        AjaxResult ajax = new AjaxResult();
-        UserAgentUtils.printAll(request);
-        return ajax;
     }
 }

@@ -34,6 +34,11 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
+    public boolean deleteUserByUserId(Long userId) {
+        return sysUserMapper.deleteUserByUserId(userId);
+    }
+
+    @Override
     public boolean updatePasswordByUserName(String userName, String password) {
         return sysUserMapper.updatePasswordByUserName(userName, passwordEncoder.encode(password));
     }

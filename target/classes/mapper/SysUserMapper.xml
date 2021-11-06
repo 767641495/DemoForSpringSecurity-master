@@ -32,6 +32,13 @@
         </where>
     </delete>
 
+    <delete id="deleteUserByUserId">
+        delete from sysuser
+        <where>
+            <if test="userId != null">and user_id = #{userId}</if>
+        </where>
+    </delete>
+
     <update id="updatePasswordByUserName" parameterType="string">
         update sysuser
         <set>
