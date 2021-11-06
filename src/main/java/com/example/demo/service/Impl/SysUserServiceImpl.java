@@ -4,6 +4,7 @@ import com.example.demo.entity.SysUser;
 import com.example.demo.mapper.SysUserMapper;
 import com.example.demo.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ public class SysUserServiceImpl implements ISysUserService {
     SysUserMapper sysUserMapper;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public SysUser selectUserByUserName(String userName) {
@@ -24,7 +25,6 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public boolean insertUser(SysUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setStatus("Legal");
         return sysUserMapper.insertUser(user);
     }
 

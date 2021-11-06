@@ -32,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
     @Autowired
+    private MyAuthenticationProvider myAuthenticationProvider;
+
+    @Autowired
     private CaptchaFilter captchaFilter;
 
     @Autowired
@@ -58,7 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //首页所有人可以访问，功能页有相应权限才能访问
         //链式编程
 
-
         http
                 .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
@@ -74,10 +76,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 此处是 post 请求,参数是登录失败后跳转地址
                 .failureForwardUrl("/error")
                 .failureHandler(myAuthenticationFailureHandler).permitAll()
-                .and()
-                .rememberMe()
+                // 通过token保存信息
+                //.and()
+                // .rememberMe()
                 // 单位秒
-                .tokenValiditySeconds(60 * 2)
+                // .tokenValiditySeconds(60)
                 .and()
                 // 登出页面
                 .logout()
@@ -118,7 +121,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+        // auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+        auth.authenticationProvider(myAuthenticationProvider);
     }
 
     @Override

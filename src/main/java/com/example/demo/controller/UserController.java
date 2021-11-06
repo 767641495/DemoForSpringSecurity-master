@@ -6,8 +6,9 @@ import com.example.demo.service.ISysUserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @program: DemoForSpringSecurity-master
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 
 @RestController
-public class userController {
+public class UserController {
     @Autowired
     private ISysUserService sysUserService;
 
@@ -30,9 +31,10 @@ public class userController {
         return AjaxResult.error(sysUser.getUserName() + "注册失败！");
     }
 
-    @ApiOperation("根据用户id删除用户")
+    @ApiOperation("注销当前用户")
     @PostMapping("/delete")
-    public AjaxResult deleteUserById(Long userId) {
+    public AjaxResult toDelete(HttpServletRequest request) {
+        Long userId = Long.parseLong(request.getSession().getAttribute("userid").toString());
         if (sysUserService.deleteUserByUserId(userId)) {
             return AjaxResult.success("删除成功！");
         }

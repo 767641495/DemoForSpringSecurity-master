@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class SysUser implements Serializable {
+public class SysUser implements Serializable{
 
     /** 用户ID */
     private Long userId;
@@ -20,9 +20,9 @@ public class SysUser implements Serializable {
     private String phone;
 
     /** 状态*/
-    private String status;
+    private int status;
 
-    public SysUser(String userName, String password, String phone, String status) {
+    public SysUser(String userName, String password, String phone, int status) {
         this.userName = userName;
         this.password = password;
         this.phone = phone;

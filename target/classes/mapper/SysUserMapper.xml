@@ -13,7 +13,7 @@
     </resultMap>
 
     <select id="selectUserByUserName" parameterType="string" resultMap="SysUserResult">
-        select user_id, username, password, phone, ip, device_ip, status
+        select user_id, username, password, phone, status
         from sysuser
         <where>
             <if test="userName != null">and username = #{userName}</if>
