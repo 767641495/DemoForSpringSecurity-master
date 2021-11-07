@@ -29,6 +29,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             //数据库中没有，认证失败
             throw new UsernameNotFoundException("该用户不存在");
         }
-        return new User(username, sysUser.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+        return new User(username, sysUser.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList("USER"));
     }
 }

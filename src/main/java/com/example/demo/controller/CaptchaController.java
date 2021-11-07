@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.pojo.AjaxResult;
 import com.example.demo.pojo.Constants;
 import com.example.demo.utils.CaptchaUtils;
+import com.example.demo.utils.PhoneFormatCheckUtils;
 import com.example.demo.utils.RedisCache;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +59,10 @@ public class CaptchaController {
 
     @ApiOperation("手机验证码生成")
     @GetMapping(value = "/captchaPhone")
-    public void getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) {
+    public AjaxResult getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) {
+        if (!PhoneFormatCheckUtils.isChinaPhoneLegal(phone)) {
+            return AjaxResult.error(phone + "不是中国大陆的手机号");
+        }
         // 保存验证码信息
         String uuid = UUID.randomUUID().toString();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
@@ -69,5 +73,6 @@ public class CaptchaController {
         HttpSession session = request.getSession(true);
         session.setAttribute("uuid", uuid);
         redisCache.setCacheObject(verifyKey, verifyCode, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        return AjaxResult.success();
     }
 }

@@ -56,9 +56,6 @@ public class UserController {
     @PostMapping("/register")
     public AjaxResult toRegister(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode) {
         SysUser sysUser = new SysUser(username, password, phone);
-        if (!PhoneFormatCheckUtils.isChinaPhoneLegal(sysUser.getPhone())) {
-            AjaxResult.error(sysUser.getPhone() + "不是中国大陆的手机号");
-        }
         if (!checkCode(request, inputCode)) {
             AjaxResult.error(sysUser.getUserName() + "验证码错误");
         }
