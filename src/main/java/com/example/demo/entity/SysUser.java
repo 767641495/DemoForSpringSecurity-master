@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 public class SysUser implements Serializable{
 
     /** 用户ID */
@@ -32,6 +31,14 @@ public class SysUser implements Serializable{
     private Date loginDate;
 
     public SysUser(String userName, String password, String phone, int status) {
+        this.userName = userName;
+        this.password = password;
+        this.phone = phone;
+        this.status = status;
+    }
+
+    public SysUser(Long userId, String userName, String password, String phone, int status) {
+        this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.phone = phone;

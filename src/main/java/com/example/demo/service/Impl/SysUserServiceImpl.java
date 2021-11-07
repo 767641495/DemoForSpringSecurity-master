@@ -8,6 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class SysUserServiceImpl implements ISysUserService {
 
@@ -46,11 +48,11 @@ public class SysUserServiceImpl implements ISysUserService {
     /**
      * 修改用户基本信息
      *
-     * @param user 用户信息
      * @return 结果
      */
     @Override
-    public int updateUserProfile(SysUser user) {
-        return sysUserMapper.updateUser(user);
+    public boolean updateUserProfile(Long userId, String loginIp, Date loginDate) {
+        return sysUserMapper.updateUserProfile(userId, loginIp, loginDate);
     }
+
 }

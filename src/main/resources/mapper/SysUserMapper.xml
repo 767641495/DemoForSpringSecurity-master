@@ -49,16 +49,9 @@
         </where>
     </update>
 
-    <update id="updateUser">
+    <update id="updateUserProfile">
         update sysuser
-        <set>
-            <if test="login_ip != null"></if> login_ip = #{loginIp}
-        </set>
-        <set>
-            <if test="login_date != null"></if> login_date = #{loginDate}
-        </set>
-        <where>
-            <if test="userId != null"></if>and user_id = #{userId}
-        </where>
+        set login_ip = #{loginIp}, login_date = #{loginDate}
+        where user_id = #{userId}
     </update>
 </mapper>

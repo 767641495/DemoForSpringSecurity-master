@@ -42,7 +42,7 @@ public class UserController {
     @PostMapping("/toLogin")
     public AjaxResult toLogin(@RequestBody LoginBody loginBody) {
         AjaxResult ajax = AjaxResult.success();
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(), loginBody.getUuid());
+        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }

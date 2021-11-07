@@ -8,6 +8,7 @@ import com.example.demo.handler.MyAuthenticationFailureHandler;
 import com.example.demo.handler.MyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -65,7 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .antMatcher("/swagger-ui/*").anonymous().and()
+                .antMatcher("/swagger-ui/*").anonymous()
+                .and()
                 // 自定义表单认证
                 // .formLogin()
                 // 登陆界面
@@ -92,8 +94,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // url 拦截
                 .authorizeRequests()
+                // 对于登录login 验证码captchaImage 允许匿名访问
+                .antMatchers("/login", "/captchaImage").anonymous()
+                // 静态资源允许访问
+                .antMatchers(
+                        HttpMethod.GET,
+                        "/",
+                        "/*.html",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/profile/**"
+                ).permitAll()
                 // 所有的请求都必须被认证。必须登录后才能访问。
-                .anyRequest().authenticated()
+                // .anyRequest().authenticated()
                 .and()
                 //关闭 csrf 防护
                 .csrf().disable();

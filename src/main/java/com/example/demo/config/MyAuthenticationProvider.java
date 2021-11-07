@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.entity.SysUser;
+import com.example.demo.pojo.LoginUser;
 import com.example.demo.service.ISysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @program: DemoForSpringSecurity-master
@@ -38,7 +42,9 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         if (sysUser == null) {
             throw new BadCredentialsException("用户名不存在");
         } else {
-            userDetails = new User(username, sysUser.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList("USER"));
+            Set<String> permissions = new HashSet<>();
+            permissions.add("USER");
+            userDetails = new LoginUser(sysUser, permissions);
             // 自定义的加密规则，用户名、输的密码和数据库保存的盐值进行加密
             if (authentication.getCredentials() == null) {
                 throw new BadCredentialsException("登录名或密码错误");

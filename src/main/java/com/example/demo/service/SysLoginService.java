@@ -31,9 +31,6 @@ public class SysLoginService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private RedisCache redisCache;
-
-    @Autowired
     private ISysUserService userService;
 
     /**
@@ -41,11 +38,9 @@ public class SysLoginService {
      *
      * @param username 用户名
      * @param password 密码
-     * @param code     验证码
-     * @param uuid     唯一标识
      * @return 结果
      */
-    public String login(String username, String password, String code, String uuid) {
+    public String login(String username, String password) {
 
         // 用户验证
         Authentication authentication;
@@ -71,6 +66,6 @@ public class SysLoginService {
     public void recordLoginInfo(SysUser user) {
         user.setLoginIp(IpUtils.getIpAddr(ServletUtils.getRequest()));
         user.setLoginDate(DateUtils.getNowDate());
-        userService.updateUserProfile(user);
+        userService.updateUserProfile(user.getUserId(), user.getLoginIp(), user.getLoginDate());
     }
 }

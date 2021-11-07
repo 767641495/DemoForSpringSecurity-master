@@ -42,7 +42,7 @@
       </div>
       <div class="buttons">
         <button type="button" id="regist-button">注册</button>
-        <button type="button" onclick="window.location.href = '/toLogin'">返回</button>
+        <button type="button" onclick="window.location.href = '/'">返回</button>
       </div>
     </div>
   </div>
@@ -93,7 +93,7 @@
             method: 'post',
             url: '/register',
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
+              'Content-Type': 'application/json'
             },
             data: data,
           }).then ((res)=> {

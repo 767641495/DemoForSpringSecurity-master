@@ -3,6 +3,8 @@ package com.example.demo.mapper;
 import com.example.demo.entity.SysUser;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 @Repository
 public interface SysUserMapper {
     SysUser selectUserByUserName(String userName);
@@ -15,5 +17,5 @@ public interface SysUserMapper {
 
     boolean updatePasswordByUserName(String userName, String password);
 
-    int updateUser(SysUser sysUser);
+    boolean updateUserProfile(Long userId, String loginIp, Date loginDate);
 }
