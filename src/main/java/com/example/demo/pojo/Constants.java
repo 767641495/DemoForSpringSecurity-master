@@ -133,4 +133,14 @@ public class Constants
      * RMI 远程方法调用
      */
     public static final String LOOKUP_RMI = "rmi://";
+
+    /**
+     * 违法次数前缀
+     */
+    public static final String VISIT_PREFIX = "visit-";
+
+    /**
+     * 违法次数前缀
+     */
+    public static final String INFRACTION_PREFIX = "infraction-";
 }
