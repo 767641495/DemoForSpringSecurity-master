@@ -1,23 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.pojo.AjaxResult;
-import com.example.demo.pojo.Constants;
-import com.example.demo.pojo.LoginBody;
-import com.example.demo.service.SysLoginService;
 import com.example.demo.service.TokenService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class RouterController {
-    @Autowired
-    private TokenService tokenService;
 
     @ApiOperation("访问登陆页面")
     @GetMapping({"/", "/toLogin"})
@@ -39,7 +29,7 @@ public class RouterController {
 
     @ApiOperation("访问主页")
     @GetMapping("/toMain")
-    // @PreAuthorize("hasRole('ROLE_USER')")
+    // @PreAuthorize("hasAuthority('USER')")
     public String main() {
         return "main";
     }

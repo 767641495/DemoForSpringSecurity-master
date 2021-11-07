@@ -241,8 +241,10 @@ public class RedisCache {
      * @param max 终止时间
      * @return
      */
-    public <T> Set<T> getCacheZset(final String key, final double min, final double max) {
-        return redisTemplate.opsForZSet().rangeByScore(key, min, max);
+    public <T> Set<T> getCacheZSet(final String key, final double min, final double max) {
+        final Set set = redisTemplate.opsForZSet().rangeByScore(key, min, max);
+        zRemRangeByScore(key, 0, min);
+        return set;
     }
 
     /**

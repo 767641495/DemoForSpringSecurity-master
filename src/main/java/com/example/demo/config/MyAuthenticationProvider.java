@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.example.demo.service.Impl.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
