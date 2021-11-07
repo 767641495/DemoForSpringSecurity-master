@@ -3,12 +3,14 @@ package com.example.demo.utils;
 import com.example.demo.pojo.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class RiskControlUtils {
+@Component
+public class RiskControl {
 
     @Autowired
     private RedisCache redisCache;

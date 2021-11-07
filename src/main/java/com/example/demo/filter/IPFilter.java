@@ -1,9 +1,7 @@
 package com.example.demo.filter;
 
 import com.example.demo.pojo.AjaxResult;
-import com.example.demo.pojo.Constants;
-import com.example.demo.utils.DateUtils;
-import com.example.demo.utils.RedisCache;
+import com.example.demo.utils.RiskControl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
 
 /**
  * @program: DemoForSpringSecurity-master
@@ -28,14 +25,12 @@ import java.util.Set;
 public class IPFilter extends OncePerRequestFilter {
 
     @Autowired
-    private RedisCache redisCache;
+    private RiskControl riskControl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String ip = request.getRemoteAddr();
-        Set<String> zset = redisCache.getCacheZSet(Constants.FORBIDDEN_SET, System.currentTimeMillis(), System.currentTimeMillis() + DateUtils.MILLIS_PER_DAY * 7);
-        Set<String> set = redisCache.getCacheSet(Constants.BLACK_SET);
-        if (zset != null && zset.contains(ip) || set != null && set.contains(ip)) {
+        if (!riskControl.judgeIP(ip)) {
             response.setContentType("application/json;charset=UTF-8");
             PrintWriter out = response.getWriter();
             ObjectMapper objectMapper = new ObjectMapper();
