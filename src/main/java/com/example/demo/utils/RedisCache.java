@@ -68,7 +68,7 @@ public class RedisCache {
         return redisTemplate.expire(key, timeout, unit);
     }
 
-    /*
+    /**
      * 自增
      *
      * @param key     Redis键
@@ -157,6 +157,17 @@ public class RedisCache {
     }
 
     /**
+     * 往缓存set中插入数据
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public long addCacheSet(final String key, final String value) {
+        return redisTemplate.opsForSet().add(key, value);
+    }
+
+    /**
      * 缓存Map
      *
      * @param key
@@ -230,10 +241,32 @@ public class RedisCache {
      * @param max 终止时间
      * @return
      */
-    public <T> Set<T> getCacheSortedSet(final String key, final double min, final double max) {
+    public <T> Set<T> getCacheZset(final String key, final double min, final double max) {
         return redisTemplate.opsForZSet().rangeByScore(key, min, max);
     }
 
+    /**
+     * 删除zset中的内容
+     *
+     * @param key
+     * @param min 起始时间
+     * @param max 终止时间
+     * @return 删除的数
+     */
+    public Long zRemRangeByScore(final String key, final double min, final double max) {
+        return redisTemplate.opsForZSet().removeRangeByScore(key, min, max);
+    }
+
+    /**
+     * 往zset中插入数据
+     *
+     * @param key     Redis键
+     * @param value   Redis值
+     * @param time    过期时间
+     */
+    public boolean zInsert(final String key, String value, final long time) {
+        return redisTemplate.opsForZSet().add(key, value, time + DateUtils.MILLIS_PER_DAY * 7);
+    }
 
 }
 

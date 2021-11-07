@@ -1,5 +1,7 @@
 package com.example.demo.pojo;
 
+import com.example.demo.utils.DateUtils;
+
 /**
  * @program: DemoForSpringSecurity-master
  * @description: 常量
@@ -135,7 +137,7 @@ public class Constants
     public static final String LOOKUP_RMI = "rmi://";
 
     /**
-     * 违法次数前缀
+     * ip访问次数前缀
      */
     public static final String VISIT_PREFIX = "visit-";
 
@@ -143,4 +145,14 @@ public class Constants
      * 违法次数前缀
      */
     public static final String INFRACTION_PREFIX = "infraction-";
+
+    /**
+     * ip临时黑名单
+     */
+    public static final String FORBIDDEN_SET = "forbidden_ip_set";
+
+    /**
+     * ip永久黑名单
+     */
+    public static final String BLACK_SET = "black_set";
 }
