@@ -3,13 +3,16 @@ package com.example.demo.controller;
 import com.example.demo.entity.SysUser;
 import com.example.demo.pojo.AjaxResult;
 import com.example.demo.pojo.Constants;
+import com.example.demo.pojo.LoginBody;
 import com.example.demo.service.ISysUserService;
+import com.example.demo.service.SysLoginService;
 import com.example.demo.utils.PhoneFormatCheckUtils;
 import com.example.demo.utils.RedisCache;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +34,18 @@ public class UserController {
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private SysLoginService loginService;
+
+    @ApiOperation("用户登陆")
+    @PostMapping("/toLogin")
+    public AjaxResult toLogin(@RequestBody LoginBody loginBody) {
+        AjaxResult ajax = AjaxResult.success();
+        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(), loginBody.getUuid());
+        ajax.put(Constants.TOKEN, token);
+        return ajax;
+    }
 
     @ApiOperation("注册用户")
     @PostMapping("/register")

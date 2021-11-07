@@ -65,6 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .antMatcher("/swagger-ui/*").anonymous().and()
                 // 自定义表单认证
                 // .formLogin()
                 // 登陆界面
@@ -106,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     out.flush();
                     out.close();
                 }).maximumSessions(1);
-        //这个地方可以设置一个账号每次能几个人登录同时登录 将maximumSessions 去掉那就是没限制 这个方我默认的是一个账号每次都一个人登录
+        //这个地方可以设置一个账号每次能几个人登录同时登录 将maximumSessions 去掉那就是没限制 我默认的是一个账号每次都一个人登录
     }
 
     /**
@@ -126,31 +127,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(myAuthenticationProvider);
     }
 
-    @Override
-    public void configure(WebSecurity web) {
-        //这个免拦截 能免 所有Security 中的拦截器  antMatchers(passUrls).permitAll() 这个免拦截 只是免当前拦截器
-        web.ignoring().antMatchers(
-                "/",
-                "/*.html",
-                "/**/*.html",
-                "/**/*.css",
-                "/**/*.js",
-                "/**/*.jpg",
-                "/profile/**",
-                "/captchaImage",
-                "/captchaPhone",
-                "/checkCode",
-                "/toRegister",
-                "/toLogin",
-                "/swagger-ui/index.html"
-        );
-    }
-
     /**
      * 解决 无法直接注入 AuthenticationManager
-     *
-     * @return
-     * @throws Exception
      */
     @Bean
     @Override

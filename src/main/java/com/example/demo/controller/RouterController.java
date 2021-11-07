@@ -11,12 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class RouterController {
-    @Autowired
-    private SysLoginService loginService;
-
     @Autowired
     private TokenService tokenService;
 
@@ -24,16 +22,6 @@ public class RouterController {
     @GetMapping({"/", "/toLogin"})
     public String login() {
         return "login";
-    }
-
-    @ApiOperation("Post访问登陆页面")
-    @PostMapping("/toLogin")
-    public AjaxResult toLogin(@RequestBody LoginBody loginBody) {
-        AjaxResult ajax = AjaxResult.success();
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-                loginBody.getUuid());
-        ajax.put(Constants.TOKEN, token);
-        return ajax;
     }
 
     @ApiOperation("访问注册页面")
@@ -58,11 +46,5 @@ public class RouterController {
     @GetMapping("/toMain")
     public String main() {
         return "main";
-    }
-
-    @ApiOperation("登陆后才可以访问的资源")
-    @GetMapping("/toHide")
-    public String toHide() {
-        return "hide";
     }
 }
