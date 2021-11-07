@@ -3,16 +3,17 @@ package com.example.demo.config;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.filter.CaptchaFilter;
 import com.example.demo.filter.IPFilter;
+import com.example.demo.filter.JwtAuthenticationTokenFilter;
 import com.example.demo.handler.MyAuthenticationFailureHandler;
 import com.example.demo.handler.MyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,7 +23,7 @@ import java.io.PrintWriter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Autowired
     private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
@@ -63,24 +64,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 自定义表单认证
-                .formLogin()
+                // .formLogin()
                 // 登陆界面
-                .loginPage("/toLogin")
+                // .loginPage("/toLogin")
                 // 当发现/authentication/form 时认为是登录，需要执行 UserDetailsServiceImpl
-                .loginProcessingUrl("/authentication/form")
+                // .loginProcessingUrl("/authentication/form")
                 // 此处是 post 请求,参数是登录成功后跳转地址
-                .successForwardUrl("/toMain")
+                // .successForwardUrl("/toMain")
                 // .successHandler(myAuthenticationSuccessHandler).permitAll()
                 // 此处是 post 请求,参数是登录失败后跳转地址
-                .failureForwardUrl("/error")
-                .failureHandler(myAuthenticationFailureHandler).permitAll()
+                // .failureForwardUrl("/error")
+                // .failureHandler(myAuthenticationFailureHandler).permitAll()
                 // 通过token保存信息
                 //.and()
                 // .rememberMe()
                 // 单位秒
                 // .tokenValiditySeconds(60)
-                .and()
+
                 // 登出页面
                 .logout()
                 .logoutSuccessUrl("/toLogin")
@@ -142,5 +144,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/toLogin",
                 "/swagger-ui/index.html"
         );
+    }
+
+    /**
+     * 解决 无法直接注入 AuthenticationManager
+     *
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

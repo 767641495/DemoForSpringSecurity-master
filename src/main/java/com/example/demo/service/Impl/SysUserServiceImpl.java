@@ -42,4 +42,15 @@ public class SysUserServiceImpl implements ISysUserService {
     public boolean updatePasswordByUserName(String userName, String password) {
         return sysUserMapper.updatePasswordByUserName(userName, passwordEncoder.encode(password));
     }
+
+    /**
+     * 修改用户基本信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    public int updateUserProfile(SysUser user) {
+        return sysUserMapper.updateUser(user);
+    }
 }

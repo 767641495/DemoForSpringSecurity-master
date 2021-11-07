@@ -12,4 +12,12 @@ public interface ISysUserService {
     boolean deleteUserByUserId(Long userId);
 
     boolean updatePasswordByUserName(String userName, String password);
+
+    /**
+     * 修改用户基本信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    int updateUserProfile(SysUser user);
 }

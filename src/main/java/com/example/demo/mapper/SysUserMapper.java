@@ -14,4 +14,6 @@ public interface SysUserMapper {
     boolean deleteUserByUserId(Long userId);
 
     boolean updatePasswordByUserName(String userName, String password);
+
+    int updateUser(SysUser sysUser);
 }

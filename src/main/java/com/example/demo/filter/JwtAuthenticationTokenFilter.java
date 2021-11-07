@@ -1,9 +1,7 @@
 package com.example.demo.filter;
 
-import com.example.demo.entity.SysUser;
 import com.example.demo.pojo.LoginUser;
 import com.example.demo.service.TokenService;
-import com.example.demo.utils.SecurityUtils;
 import com.example.demo.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,18 +24,15 @@ import java.io.IOException;
  **/
 
 @Component
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
-{
+public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private TokenService tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         LoginUser loginUser = tokenService.getLoginUser(request);
-        if (loginUser != null && StringUtils.isNull(SecurityUtils.getAuthentication()))
-        {
+        if (loginUser != null && StringUtils.isNull(SecurityContextHolder.getContext().getAuthentication())) {
             tokenService.verifyToken(loginUser);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -7,10 +7,7 @@ import com.example.demo.utils.RedisCache;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,11 +35,11 @@ public class CaptchaController {
 
     @ApiOperation("图片验证码生成")
     @GetMapping(value = "/captchaImage")
-    public AjaxResult getPhotoCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void getPhotoCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
-        response.setContentType("image/jpeg");
+        response.setContentType("image/jpg");
 
         // 保存验证码信息
         String uuid = UUID.randomUUID().toString();
@@ -57,7 +54,6 @@ public class CaptchaController {
         //生成图片
         int w = 100, h = 30;
         CaptchaUtils.outputImage(w, h, response.getOutputStream(), verifyCode);
-        return AjaxResult.success();
     }
 
     @ApiOperation("手机验证码生成")

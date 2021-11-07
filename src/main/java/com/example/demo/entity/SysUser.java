@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +24,12 @@ public class SysUser implements Serializable{
 
     /** 状态*/
     private int status;
+
+    /** 最后登录IP */
+    private String loginIp;
+
+    /** 最后登录时间 */
+    private Date loginDate;
 
     public SysUser(String userName, String password, String phone, int status) {
         this.userName = userName;
