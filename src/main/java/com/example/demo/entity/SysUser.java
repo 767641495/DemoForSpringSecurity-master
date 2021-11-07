@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -30,18 +29,16 @@ public class SysUser implements Serializable{
     /** 最后登录时间 */
     private Date loginDate;
 
-    public SysUser(String userName, String password, String phone, int status) {
+    public SysUser(String userName, String password, String phone) {
         this.userName = userName;
         this.password = password;
         this.phone = phone;
-        this.status = status;
     }
 
-    public SysUser(Long userId, String userName, String password, String phone, int status) {
+    public SysUser(Long userId, String userName, String password, String phone) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.phone = phone;
-        this.status = status;
     }
 }

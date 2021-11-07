@@ -75,10 +75,6 @@ public class LoginUser implements UserDetails
         this.token = token;
     }
 
-    public LoginUser()
-    {
-    }
-
     public LoginUser(SysUser user, Set<String> permissions)
     {
         this.user = user;

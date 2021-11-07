@@ -26,6 +26,7 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public boolean insertUser(SysUser user) {
+        user.setStatus(0);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return sysUserMapper.insertUser(user);
     }

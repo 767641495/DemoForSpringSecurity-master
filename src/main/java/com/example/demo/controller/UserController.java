@@ -4,8 +4,10 @@ import com.example.demo.entity.SysUser;
 import com.example.demo.pojo.AjaxResult;
 import com.example.demo.pojo.Constants;
 import com.example.demo.pojo.LoginBody;
+import com.example.demo.pojo.LoginUser;
 import com.example.demo.service.ISysUserService;
 import com.example.demo.service.SysLoginService;
+import com.example.demo.service.TokenService;
 import com.example.demo.utils.PhoneFormatCheckUtils;
 import com.example.demo.utils.RedisCache;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +32,9 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 public class UserController {
     @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private ISysUserService sysUserService;
 
     @Autowired
@@ -49,8 +54,8 @@ public class UserController {
 
     @ApiOperation("注册用户")
     @PostMapping("/register")
-    public AjaxResult toRegister(HttpServletRequest request, SysUser sysUser, @RequestParam("inputCode") String inputCode) {
-
+    public AjaxResult toRegister(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode) {
+        SysUser sysUser = new SysUser(username, password, phone);
         if (!PhoneFormatCheckUtils.isChinaPhoneLegal(sysUser.getPhone())) {
             AjaxResult.error(sysUser.getPhone() + "不是中国大陆的手机号");
         }
@@ -82,7 +87,8 @@ public class UserController {
     @ApiOperation("注销当前用户")
     @PostMapping("/delete")
     public AjaxResult toDelete(HttpServletRequest request) {
-        Long userId = Long.parseLong(request.getSession().getAttribute("userid").toString());
+        final LoginUser loginUser = tokenService.getLoginUser(request);
+        Long userId = loginUser.getUser().getUserId();
         if (sysUserService.deleteUserByUserId(userId)) {
             return AjaxResult.success("删除成功！");
         }
