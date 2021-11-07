@@ -1,24 +1,20 @@
 package com.example.demo.config;
 
-import com.alibaba.fastjson.JSONObject;
 import com.example.demo.filter.CaptchaFilter;
 import com.example.demo.filter.IPFilter;
 import com.example.demo.filter.JwtAuthenticationTokenFilter;
 import com.example.demo.handler.MyAuthenticationFailureHandler;
 import com.example.demo.handler.MyAuthenticationSuccessHandler;
+import com.example.demo.handler.MyLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.io.PrintWriter;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -31,6 +27,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+
+    @Autowired
+    private MyLogoutSuccessHandler myLogoutSuccessHandler;
 
     @Autowired
     private MyAuthenticationProvider myAuthenticationProvider;
@@ -61,67 +60,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //首页所有人可以访问，功能页有相应权限才能访问
         //链式编程
-
         http
-                .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .antMatcher("/swagger-ui/*").anonymous()
-                .and()
-                // 自定义表单认证
-                // .formLogin()
-                // 登陆界面
-                // .loginPage("/toLogin")
-                // 当发现/authentication/form 时认为是登录，需要执行 UserDetailsServiceImpl
-                // .loginProcessingUrl("/authentication/form")
-                // 此处是 post 请求,参数是登录成功后跳转地址
-                // .successForwardUrl("/toMain")
-                // .successHandler(myAuthenticationSuccessHandler).permitAll()
-                // 此处是 post 请求,参数是登录失败后跳转地址
-                // .failureForwardUrl("/error")
-                // .failureHandler(myAuthenticationFailureHandler).permitAll()
-                // 通过token保存信息
-                //.and()
-                // .rememberMe()
-                // 单位秒
-                // .tokenValiditySeconds(60)
-
-                // 登出页面
-                .logout()
-                .logoutSuccessUrl("/toLogin")
-                // 登出时清空session
-                .invalidateHttpSession(true)
                 .and()
                 // url 拦截
                 .authorizeRequests()
                 // 对于登录login 验证码captchaImage 允许匿名访问
-                .antMatchers("/login","/captchaImage").anonymous()
-                // 静态资源允许访问
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/",
-                        "/*.html",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/profile/**"
-                ).permitAll()
+                // .antMatchers("/login","/captchaImage").anonymous()
                 // 所有的请求都必须被认证。必须登录后才能访问。
-                // .anyRequest().authenticated()
+                .anyRequest().authenticated()
+                .and()
+                // 基于token，所以不需要session
+                // .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // 登出页面
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(myLogoutSuccessHandler)
+                // 登出时清空session
+                // .invalidateHttpSession(true)
                 .and()
                 //关闭 csrf 防护
-                .csrf().disable();
-
-        http
-                .sessionManagement()
-                .invalidSessionStrategy((httpServletRequest, httpServletResponse) -> {
-                    httpServletResponse.setContentType("application/json;charset=utf-8");
-                    PrintWriter out = httpServletResponse.getWriter();
-                    out.write(JSONObject.toJSONString("身份失效了"));
-                    out.flush();
-                    out.close();
-                }).maximumSessions(1);
-        //这个地方可以设置一个账号每次能几个人登录同时登录 将maximumSessions 去掉那就是没限制 我默认的是一个账号每次都一个人登录
+                .csrf().disable()
+                .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     /**
@@ -136,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * 身份认证接口
      */
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         // auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
         auth.authenticationProvider(myAuthenticationProvider);
     }

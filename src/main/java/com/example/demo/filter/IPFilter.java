@@ -27,8 +27,7 @@ public class IPFilter extends OncePerRequestFilter {
     private final List<String> forbiddenIpList = new ArrayList<>();
 
     public IPFilter() {
-        // 这是本地的ip
-        // this.forbiddenIpList.add("0:0:0:0:0:0:0:1");
+
     }
 
     @Override

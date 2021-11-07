@@ -7,6 +7,7 @@ import com.example.demo.service.SysLoginService;
 import com.example.demo.service.TokenService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,13 +38,8 @@ public class RouterController {
     }
 
     @ApiOperation("访问主页")
-    @PostMapping("/toMain")
-    public String toMain() {
-        return "main";
-    }
-
-    @ApiOperation("访问主页")
     @GetMapping("/toMain")
+    // @PreAuthorize("hasRole('ROLE_USER')")
     public String main() {
         return "main";
     }
