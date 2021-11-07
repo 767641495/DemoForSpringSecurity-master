@@ -7,6 +7,7 @@ import com.example.demo.utils.RedisCache;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +38,7 @@ public class CaptchaController {
 
     @ApiOperation("图片验证码生成")
     @GetMapping(value = "/captchaImage")
-    public void getPhotoCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public AjaxResult getPhotoCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
@@ -56,6 +57,7 @@ public class CaptchaController {
         //生成图片
         int w = 100, h = 30;
         CaptchaUtils.outputImage(w, h, response.getOutputStream(), verifyCode);
+        return AjaxResult.success();
     }
 
     @ApiOperation("手机验证码生成")
@@ -72,23 +74,4 @@ public class CaptchaController {
         session.setAttribute("uuid", uuid);
         redisCache.setCacheObject(verifyKey, verifyCode, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
     }
-
-    @ApiOperation("校验手机验证码")
-    @GetMapping(value = "/checkCode")
-    public AjaxResult checkCode(HttpServletRequest request, @RequestParam("inputCode") String inputCode) {
-        HttpSession session = request.getSession(true);
-        String uuid = session.getAttribute("uuid").toString();
-        //设置redis的key，这里设置为项目名:使用的字段:用户Id
-        String redisKey = Constants.CAPTCHA_CODE_KEY + uuid;
-        String realCode = redisCache.getCacheObject(redisKey);
-        if (realCode != null && realCode.equals(inputCode)) {
-            log.info("验证码校验成功");
-            return AjaxResult.success();
-        } else {
-            log.info("验证码校验失败");
-            return AjaxResult.error();
-        }
-    }
-
-
 }
