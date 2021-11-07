@@ -37,6 +37,8 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         // authentication.getPrincipal()是账号
 
         // 黑产校验
+
+
         if (!encoder.matches(authentication.getCredentials().toString(), userDetails.getPassword())) {
             log.error("密码错误");
             throw new BadCredentialsException("登录名或密码错误");
