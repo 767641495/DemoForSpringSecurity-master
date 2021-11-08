@@ -36,13 +36,13 @@ public class CaptchaController {
     private RedisCache redisCache;
 
     @ApiOperation("图片验证码生成")
-    @PostMapping(value = "/captchaImage")
+    @GetMapping(value = "/captchaImage")
     public AjaxResult getPhotoCaptcha(HttpServletResponse response) throws IOException {
         AjaxResult ajax = AjaxResult.success();
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
-        response.setContentType("image/jpg");
+        // response.setContentType("image/jpeg");
 
         // 保存验证码信息
         String uuid = UUID.randomUUID().toString();

@@ -73,7 +73,7 @@
     }
     document.getElementById("code").onclick = function () {
       axios({
-        method: 'post',
+        method: 'get',
         url: '/captchaImage',
         responseType: 'blob',
       }).then((res) => {

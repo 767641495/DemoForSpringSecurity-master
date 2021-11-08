@@ -52,7 +52,7 @@
   document.getElementById("get-phone-code").onclick = function () {
     let phone = document.getElementById("phone").value;
     console.log(phone, phone.length);
-    if (phone.length == 11) {
+    if (phone.length === 11) {
       let i = 60;
       document.getElementById("get-phone-code").disabled = true;
       const clock = () => {
@@ -86,10 +86,10 @@
       alert("用户名为空");
     } else if (!phone) {
       alert("手机号为空");
-    } else if (phone.length != 11) {//手机号长度为11
+    } else if (phone.length !== 11) {//手机号长度为11
       alert("手机号格式错误");
       document.getElementById("phone").value = '';
-    } else if (phoneCode.length != 8) {//验证码长度为8
+    } else if (phoneCode.length !== 8) {//验证码长度为8
       alert("验证码错误");
       document.getElementById(("phone-code")).value = '';
     } else if (pass1 === pass2) {

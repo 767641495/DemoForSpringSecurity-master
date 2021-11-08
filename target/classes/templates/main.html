@@ -8,7 +8,6 @@
 
 <h1>登陆成功</h1>
 <button id="logout">退出登录</button>
-<button id="over">注销账号</button>
 <script>
     document.getElementById("logout").onclick = function () {
         axios({
@@ -33,29 +32,6 @@
             }
         });
     };
-    document.getElementById("over").onclick = function () {
-        axios({
-            method: 'post',
-            url: '/delete',
-            headers: {
-                'Authorization': `Bearer ${window.sessionStorage.getItem('token')}`
-            }
-        }).then((res)=>{
-            console.log(res);
-            alert("注销成功");
-            window.location.href='/toLogin';
-        }).catch((error)=>{
-            console.log((error));
-            if (error.response) {
-                alert("注销失败");
-                console.log(error.response.data);
-            } else if (error.request) {
-                console.log(error.request);
-            } else {
-                console.log('Error', error.message);
-            }
-        });
-    }
 </script>
 <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
