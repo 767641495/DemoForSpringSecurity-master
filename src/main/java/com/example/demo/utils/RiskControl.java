@@ -18,21 +18,21 @@ public class RiskControl {
     public boolean judgeIP(String ip) {
         String visit_key = Constants.VISIT_PREFIX + ip;
         String message;
-        String num = redisCache.getCacheObject(visit_key);
+        Integer num = redisCache.getCacheObject(visit_key);
         Set<String> blackSet = redisCache.getCacheSet(Constants.BLACK_SET);
-        if(blackSet != null && blackSet.contains(ip)) {
+        if (blackSet != null && blackSet.contains(ip)) {
             log.error(ip + "已被加入黑名单");
             return false;
         }
         if (num == null) {
-            redisCache.setCacheObject(visit_key, "1", 60, TimeUnit.SECONDS);
+            redisCache.setCacheObject(visit_key, 1, 60, TimeUnit.SECONDS);
             message = "第1次访问";
-        } else if (StringUtils.equals(num, "10")) {
-            //1分钟内,连续访问10次的时候,就不让访问
-            message = "访问频繁,一分钟只能访问10次";
+        } else if (num >= 30) {
+            //1分钟内,连续访问30次的时候,就不让访问
+            message = "访问频繁,一分钟只能访问30次";
             String infraction_key = Constants.INFRACTION_PREFIX + ip;
             if (redisCache.getCacheObject(infraction_key) == null) {
-                redisCache.setCacheObject(infraction_key, "1", 60, TimeUnit.SECONDS);
+                redisCache.setCacheObject(infraction_key, 1, 60, TimeUnit.SECONDS);
             }
             Long infraction = redisCache.increment(infraction_key, 1);
             if (infraction >= 5 && infraction < 7) {
