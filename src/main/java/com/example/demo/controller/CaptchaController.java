@@ -59,8 +59,8 @@ public class CaptchaController {
     }
 
     @ApiOperation("手机验证码生成")
-    @PostMapping(value = "/captchaPhone")
-    public AjaxResult getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) {
+    @GetMapping(value = "/captchaPhone")
+    public AjaxResult getPhoneCaptcha( @RequestParam("phone") String phone) {
         AjaxResult ajax = AjaxResult.success();
         if (!PhoneFormatCheckUtils.isChinaPhoneLegal(phone)) {
             return AjaxResult.error(phone + "不是中国大陆的手机号");

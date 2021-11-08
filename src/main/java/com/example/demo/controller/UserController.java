@@ -12,10 +12,7 @@ import com.example.demo.utils.RedisCache;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,12 +44,7 @@ public class UserController {
         AjaxResult ajax = AjaxResult.success();
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
         ajax.put(Constants.TOKEN, token);
-        main();
         return ajax;
-    }
-
-    public String main() {
-        return "main";
     }
 
     @ApiOperation("注册用户")

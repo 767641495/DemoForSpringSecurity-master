@@ -5,7 +5,6 @@ import com.example.demo.pojo.AjaxResult;
 import com.example.demo.pojo.HttpStatus;
 import com.example.demo.pojo.LoginUser;
 import com.example.demo.service.TokenService;
-import com.example.demo.utils.RedisCache;
 import com.example.demo.utils.ServletUtils;
 import com.example.demo.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class RouterController {
@@ -25,5 +26,11 @@ public class RouterController {
     @GetMapping("/error")
     public String error() {
         return "error";
+    }
+
+    @ApiOperation("访问主页")
+    @PostMapping("/toMain")
+    public String main() {
+        return "main";
     }
 }
