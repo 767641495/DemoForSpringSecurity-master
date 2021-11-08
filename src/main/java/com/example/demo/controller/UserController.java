@@ -8,7 +8,6 @@ import com.example.demo.pojo.LoginUser;
 import com.example.demo.service.ISysUserService;
 import com.example.demo.service.SysLoginService;
 import com.example.demo.service.TokenService;
-import com.example.demo.utils.PhoneFormatCheckUtils;
 import com.example.demo.utils.RedisCache;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * @program: DemoForSpringSecurity-master
@@ -49,14 +47,19 @@ public class UserController {
         AjaxResult ajax = AjaxResult.success();
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
         ajax.put(Constants.TOKEN, token);
+        main();
         return ajax;
+    }
+
+    public String main() {
+        return "main";
     }
 
     @ApiOperation("注册用户")
     @PostMapping("/register")
-    public AjaxResult toRegister(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode) {
+    public AjaxResult toRegister(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) {
         SysUser sysUser = new SysUser(username, password, phone);
-        if (!checkCode(request, inputCode)) {
+        if (!checkCode(inputCode, uuid)) {
             AjaxResult.error(sysUser.getUserName() + "验证码错误");
         }
         if (sysUserService.insertUser(sysUser)) {
@@ -66,9 +69,7 @@ public class UserController {
     }
 
     @ApiOperation("校验手机验证码")
-    public Boolean checkCode(HttpServletRequest request, @RequestParam("inputCode") String inputCode) {
-        HttpSession session = request.getSession(true);
-        String uuid = session.getAttribute("uuid").toString();
+    public Boolean checkCode(@RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) {
         //设置redis的key，这里设置为项目名:使用的字段:用户Id
         String redisKey = Constants.CAPTCHA_CODE_KEY + uuid;
         String realCode = redisCache.getCacheObject(redisKey);

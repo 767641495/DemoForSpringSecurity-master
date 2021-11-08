@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,8 +36,9 @@ public class CaptchaController {
     private RedisCache redisCache;
 
     @ApiOperation("图片验证码生成")
-    @GetMapping(value = "/captchaImage")
-    public void getPhotoCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping(value = "/captchaImage")
+    public AjaxResult getPhotoCaptcha(HttpServletResponse response) throws IOException {
+        AjaxResult ajax = AjaxResult.success();
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
@@ -48,18 +50,18 @@ public class CaptchaController {
         // 生成随机字串
         String verifyCode = CaptchaUtils.generateVerifyCode(4);
         log.info("图形验证码" + verifyCode);
-        // 存入会话session
-        HttpSession session = request.getSession(true);
-        session.setAttribute("uuid", uuid);
+        ajax.put("uuid", uuid);
         redisCache.setCacheObject(verifyKey, verifyCode, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
         //生成图片
         int w = 100, h = 30;
         CaptchaUtils.outputImage(w, h, response.getOutputStream(), verifyCode);
+        return ajax;
     }
 
     @ApiOperation("手机验证码生成")
-    @GetMapping(value = "/captchaPhone")
+    @PostMapping(value = "/captchaPhone")
     public AjaxResult getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) {
+        AjaxResult ajax = AjaxResult.success();
         if (!PhoneFormatCheckUtils.isChinaPhoneLegal(phone)) {
             return AjaxResult.error(phone + "不是中国大陆的手机号");
         }
@@ -69,9 +71,7 @@ public class CaptchaController {
         // 生成随机字串
         String verifyCode = CaptchaUtils.generateMathCode(8);
         log.info("手机验证码："+ verifyCode);
-        // 存入会话session
-        HttpSession session = request.getSession(true);
-        session.setAttribute("uuid", uuid);
+        ajax.put("uuid", uuid);
         redisCache.setCacheObject(verifyKey, verifyCode, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
         return AjaxResult.success();
     }

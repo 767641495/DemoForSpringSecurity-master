@@ -54,15 +54,11 @@
       axios({
         method: 'post',
         url: '/toLogin',
-        // headers: {
-        //     'Content-Type': 'application/x-www-form-urlencoded'
-        // },
         data: data,
       }).then((res)=>{
         console.log(res);
         alert("登陆成功");
         window.sessionStorage.setItem('token', res.data.token);
-        window.location.href='/toMain';
       }).catch((error)=>{
         console.log((error));
         if (error.response) {
@@ -77,7 +73,7 @@
     }
     document.getElementById("code").onclick = function () {
       axios({
-        method: 'get',
+        method: 'post',
         url: '/captchaImage',
         responseType: 'blob',
       }).then((res) => {

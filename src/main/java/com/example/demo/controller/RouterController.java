@@ -26,11 +26,4 @@ public class RouterController {
     public String error() {
         return "error";
     }
-
-    @ApiOperation("访问主页")
-    @GetMapping("/toMain")
-    // @PreAuthorize("hasAuthority('USER')")
-    public String main() {
-        return "main";
-    }
 }

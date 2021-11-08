@@ -38,9 +38,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
     }
 
     private String validate(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-
-        String uuid = session.getAttribute("uuid").toString();
+        String uuid = request.getParameter("uuid");
         //设置redis的key，这里设置为项目名:使用的字段:用户Id
         String redisKey = Constants.CAPTCHA_CODE_KEY + uuid;
         String captcha = redisCache.getCacheObject(redisKey);
@@ -59,8 +57,8 @@ public class CaptchaFilter extends OncePerRequestFilter {
         if (!StringUtils.equalsAnyIgnoreCase(captcha, captchaParam)) {
             return "验证码不匹配";
         }
-        // 校验成功之后，从session中移除验证码
-        session.removeAttribute("captcha");
+        // 校验成功之后，从redis中移除验证码
+        redisCache.deleteObject(redisKey);
 
         return "success";
     }
