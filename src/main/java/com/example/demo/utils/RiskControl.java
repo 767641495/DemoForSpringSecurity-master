@@ -48,7 +48,7 @@ public class RiskControl {
             redisCache.increment(visit_key, 1);
             message = "第" + num + "次访问";
         }
-        log.info(visit_key + message);
+        log.info(ip + message);
         return true;
     }
 }
