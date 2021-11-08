@@ -1,6 +1,7 @@
 package com.example.demo.filter;
 
 import com.example.demo.pojo.AjaxResult;
+import com.example.demo.utils.IpUtils;
 import com.example.demo.utils.RiskControl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class IPFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String ip = request.getRemoteAddr();
+        String ip = IpUtils.getIpAddr(request);
         if (!riskControl.judgeIP(ip)) {
             response.setContentType("application/json;charset=UTF-8");
             PrintWriter out = response.getWriter();
