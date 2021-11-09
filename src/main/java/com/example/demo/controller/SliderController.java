@@ -37,9 +37,7 @@ public class SliderController {
 
     @RequestMapping("/image")
     public AjaxResult image() {
-
         ImageResult imageResult;
-
         try {
             imageResult = new ImgUtil().imageResult();
             xPosCache = imageResult.getXpos();
@@ -51,8 +49,7 @@ public class SliderController {
         }
     }
 
-
-    @RequestMapping("/verification")
+    @PostMapping("/verification")
     public AjaxResult verification(@RequestParam("moveX") int moveX) {
         int MOVE_CHECK_ERROR = 2;
         if ((moveX < (xPosCache + MOVE_CHECK_ERROR))

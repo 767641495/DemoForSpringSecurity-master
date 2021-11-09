@@ -79,31 +79,6 @@ public class ImgUtil {
 
     ImageMessage imageMessage = new ImageMessage();
 
-
-    public static void main(String[] args) {
-        try {
-            /*ImageResult imageResult = null;
-            for(int i = 0; i< 1; i++){
-                 imageResult = ImgUtil.imageResult("1.png");
-                System.out.println();
-            }*/
-            /*File file = new File(basePath+"ori");
-            File[] files = file.listFiles();
-            for (File f:files){
-                log.info("本次压缩的文件为:" + f);
-                BufferedImage bufferedImage = ImageIO.read(f);
-                bufferedImage = this.compressImage(bufferedImage,IMAGE_MAX_WIDTH,IMAGE_MAX_HEIGHT);
-                ImageIO.write(bufferedImage,IMAGE_SUFFIX,
-                        new File(basePath  + "list/" + new Random().nextInt(100)+"."+IMAGE_SUFFIX));
-            }*/
-            new ImgUtil().test();
-
-            log.info("执行完成");
-        } catch (Exception ex) {
-            ex.getMessage();
-        }
-    }
-
     void test() throws IOException {
         BufferedImage image = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
         for (int i = 0; i < 200; i++) {
@@ -178,7 +153,6 @@ public class ImgUtil {
         createXYPos(oriBufferedImage);
         //获取被扣图像的标志图
         int[][] blockData = getBlockData(oriBufferedImage);
-        //printBlockData(blockData);
 
         //计算抠图区域的信息
         createImageMessage();

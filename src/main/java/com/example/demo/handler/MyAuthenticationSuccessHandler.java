@@ -34,29 +34,4 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
         response.getWriter().write(objectMapper.writeValueAsString(authentication));
         super.onAuthenticationSuccess(request, response, authentication);
     }
-    /*
-
-    RequestCache requestCache = new HttpSessionRequestCache();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = null;
-        try {
-
-            user = userService.getUserByMail(userDetails.getUsername());
-            request.getSession().setAttribute("username",user.getUsername());
-            request.getSession().setAttribute("userId",user.getId());
-            logService.addLog("myUserDetailsService.loadUserByUsername","认证模块","低",
-                    "登录","成功","邮箱为" + user.getMail() + "的用户登录成功，登录IP为" + request.getRemoteAddr(),user.getId());
-        }catch (Exception e){
-            logService.addLog("MyAuthenticationSuccessHandler.onAuthenticationSuccess","认证模块","高","登录","失败","保存session失败,mail为" + user.getMail(),user.getId());
-        }
-        String url = null;
-        SavedRequest savedRequest = requestCache.getRequest(request,response);
-        if(savedRequest != null){
-            url = savedRequest.getRedirectUrl();
-        }
-        if(url == null){
-            getRedirectStrategy().sendRedirect(request,response,"/admin/adminIndex.htm");
-        }
-
-     */
 }

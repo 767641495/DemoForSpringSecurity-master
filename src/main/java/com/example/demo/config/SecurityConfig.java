@@ -72,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // url 拦截
                 // .antMatcher("/swagger-ui/*").anonymous().and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/", "/toLogin", "/captchaImage", "/toRegister", "/captchaPhone", "/swagger-ui/**", "/toMain").anonymous()
+                .antMatchers(HttpMethod.GET, "/", "/toLogin", "/captchaImage", "/toRegister", "/captchaPhone", "/swagger-ui/**", "/toMain", "/slider/**").anonymous()
                 .antMatchers(HttpMethod.POST, "/register", "/toLogin").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
@@ -81,11 +81,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
-                        "/**/*.jpg",
-                        "/profile/**"
+                        "/**/*.jpg"
                 ).permitAll()
                 // 所有的请求都必须被认证。必须登录后才能访问。
-                // .anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 // 基于token，所以不需要session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
