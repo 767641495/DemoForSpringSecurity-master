@@ -9,8 +9,7 @@ import com.example.demo.utils.DateUtils;
  * @create: 2021-09-02 17:23
  **/
 
-public class Constants
-{
+public class Constants {
     /**
      * UTF-8 字符集
      */
@@ -149,10 +148,15 @@ public class Constants
     /**
      * ip临时黑名单
      */
-    public static final String FORBIDDEN_SET = "forbidden_ip_set";
+    public static final String TEMPORARY_ZSET = "forbidden_ip_set";
 
     /**
      * ip永久黑名单
      */
     public static final String BLACK_SET = "black_set";
+
+    /**
+     * 单个ip下注册的手机号
+     */
+    public static final String IP_PHONE_PREFIX = "ip_phone";
 }

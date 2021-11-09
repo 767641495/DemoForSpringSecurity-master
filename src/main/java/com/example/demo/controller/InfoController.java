@@ -25,10 +25,4 @@ public class InfoController {
         UserAgentUtils.printAll(request);
         return AjaxResult.success();
     }
-
-    @ApiOperation("获取IP")
-    @GetMapping("/getIP")
-    public AjaxResult getIP(HttpServletRequest request) {
-        return AjaxResult.success(UserAgentUtils.getIP(request));
-    }
 }

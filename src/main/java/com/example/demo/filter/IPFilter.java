@@ -31,14 +31,7 @@ public class IPFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String ip = IpUtils.getIpAddr(request);
-        if (!riskControl.judgeIP(ip)) {
-            response.setContentType("application/json;charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            ObjectMapper objectMapper = new ObjectMapper();
-            out.write(objectMapper.writeValueAsString(AjaxResult.error(400, "禁止访问的ip")));
-            out.flush();
-        } else {
-            filterChain.doFilter(request, response);
-        }
+        riskControl.judgeIP(ip, response);
+        filterChain.doFilter(request, response);
     }
 }

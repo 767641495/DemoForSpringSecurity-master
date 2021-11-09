@@ -8,13 +8,17 @@ import com.example.demo.pojo.LoginUser;
 import com.example.demo.service.ISysUserService;
 import com.example.demo.service.SysLoginService;
 import com.example.demo.service.TokenService;
+import com.example.demo.utils.IpUtils;
 import com.example.demo.utils.RedisCache;
+import com.example.demo.utils.RiskControl;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @program: DemoForSpringSecurity-master
@@ -38,9 +42,14 @@ public class UserController {
     @Autowired
     private SysLoginService loginService;
 
+    @Autowired
+    private RiskControl riskControl;
+
     @ApiOperation("用户登陆")
     @PostMapping("/toLogin")
-    public AjaxResult toLogin(@RequestBody LoginBody loginBody) {
+    public AjaxResult toLogin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginBody loginBody) throws IOException {
+        riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request), response);
+
         AjaxResult ajax = AjaxResult.success();
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
         ajax.put(Constants.TOKEN, token);
@@ -49,7 +58,11 @@ public class UserController {
 
     @ApiOperation("注册用户")
     @PostMapping("/register")
-    public AjaxResult toRegister(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) {
+    public AjaxResult toRegister(HttpServletRequest request, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) throws IOException {
+        String ip = IpUtils.getIpAddr(request);
+        riskControl.updateAndJudgeIp(ip, response);
+        riskControl.updatePhoneToIP(ip, phone, response);
+
         SysUser sysUser = new SysUser(username, password, phone);
         if (!checkCode(inputCode, uuid)) {
             AjaxResult.error(sysUser.getUserName() + "验证码错误");

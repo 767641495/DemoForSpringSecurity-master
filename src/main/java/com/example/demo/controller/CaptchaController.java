@@ -2,9 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.pojo.AjaxResult;
 import com.example.demo.pojo.Constants;
-import com.example.demo.utils.CaptchaUtils;
-import com.example.demo.utils.PhoneFormatCheckUtils;
-import com.example.demo.utils.RedisCache;
+import com.example.demo.utils.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +33,14 @@ public class CaptchaController {
     @Autowired
     private RedisCache redisCache;
 
+    @Autowired
+    private RiskControl riskControl;
+
     @ApiOperation("图片验证码生成")
     @GetMapping(value = "/captchaImage")
-    public AjaxResult getPhotoCaptcha(HttpServletResponse response) throws IOException {
+    public AjaxResult getPhotoCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request), response);
+
         AjaxResult ajax = AjaxResult.success();
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
@@ -60,7 +63,9 @@ public class CaptchaController {
 
     @ApiOperation("手机验证码生成")
     @GetMapping(value = "/captchaPhone")
-    public AjaxResult getPhoneCaptcha( @RequestParam("phone") String phone) {
+    public AjaxResult getPhoneCaptcha(HttpServletRequest request, HttpServletResponse response, @RequestParam("phone") String phone) throws IOException {
+        riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request), response);
+
         AjaxResult ajax = AjaxResult.success();
         if (!PhoneFormatCheckUtils.isChinaPhoneLegal(phone)) {
             return AjaxResult.error(phone + "不是中国大陆的手机号");
@@ -70,7 +75,7 @@ public class CaptchaController {
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
         // 生成随机字串
         String verifyCode = CaptchaUtils.generateMathCode(8);
-        log.info("手机验证码："+ verifyCode);
+        log.info("手机验证码：" + verifyCode);
         ajax.put("uuid", uuid);
         redisCache.setCacheObject(verifyKey, verifyCode, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
         return AjaxResult.success();

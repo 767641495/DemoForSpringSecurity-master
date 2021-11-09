@@ -168,6 +168,16 @@ public class RedisCache {
     }
 
     /**
+     * 是否在set中
+     *
+     * @param key
+     * @return
+     */
+    public boolean isInCacheSet(final String key, final String key2) {
+        return redisTemplate.opsForSet().isMember(key, key2);
+    }
+
+    /**
      * 缓存Map
      *
      * @param key
@@ -243,8 +253,19 @@ public class RedisCache {
      */
     public <T> Set<T> getCacheZSet(final String key, final double min, final double max) {
         final Set set = redisTemplate.opsForZSet().rangeByScore(key, min, max);
-        zRemRangeByScore(key, 0, min);
         return set;
+    }
+
+    /**
+     * 是否在zset中
+     *
+     * @param key
+     * @param min 起始时间
+     * @param max 终止时间
+     * @return
+     */
+    public boolean isInCacheZSet(final String key, final String key2, final double min, final double max) {
+        return getCacheZSet(key, min, max).contains(key2);
     }
 
     /**
@@ -266,7 +287,7 @@ public class RedisCache {
      * @param value   Redis值
      * @param time    过期时间
      */
-    public boolean zInsert(final String key, String value, final long time) {
+    public boolean addCacheZSet(final String key, String value, final long time) {
         return redisTemplate.opsForZSet().add(key, value, time + DateUtils.MILLIS_PER_DAY * 7);
     }
 
