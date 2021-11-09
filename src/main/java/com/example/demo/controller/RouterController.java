@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class RouterController {
@@ -27,7 +28,7 @@ public class RouterController {
     }
 
     @ApiOperation("访问主页")
-    @PostMapping("/toMain")
+    @GetMapping("/toMain")
     public String main() {
         return "main";
     }

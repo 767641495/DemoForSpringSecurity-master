@@ -2,85 +2,149 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=drive-width,initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="stylesheet" href="./css/login.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
-        rel="stylesheet" type="text/css" th:href="@{css/login.css}">
-  <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=drive-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="./css/login.css">
+    <!--  <link rel="stylesheet" href="./css/regist.css">-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
+          rel="stylesheet" type="text/css" th:href="@{css/login.css}">
+    <title>Login</title>
 </head>
 
 <body>
 <div id="login-box">
-  <h1>Login</h1>
-  <div class="form">
-    <div class="item">
-      <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-      <input type="text" id="username" placeholder="账号"/>
-    </div>
+    <h1>Login</h1>
+    <div class="form">
+        <div class="item">
+            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+            <input type="text" id="username" placeholder="账号"/>
+        </div>
 
-    <div class="item">
-      <i class="fa fa-key" aria-hidden="true"></i>
-      <input type="password" id="password" placeholder="密码">
-    </div>
+        <div class="item">
+            <i class="fa fa-key" aria-hidden="true"></i>
+            <input type="password" id="password" placeholder="密码">
+        </div>
 
-    <div class="item">
-      <i class="fa fa-key" aria-hidden="true"></i>
-      <input type="text" id="captcha" placeholder="验证码">
-    </div>
+        <div class="item">
+            <i class="fa fa-key" aria-hidden="true"></i>
+            <input type="text" id="captcha" placeholder="验证码">
+        </div>
 
-    <div>
-      <img src="/captchaImage" alt="验证码" id="code"/>
-    </div>
+        <div>
+            <img src="" alt="验证码" id="code"/>
+        </div>
 
-    <div class="buttons">
-      <button type="button" id="login-button">登录</button>
-      <button type="button" onclick="window.location.href = '/toRegister'">注册</button>
+        <div class="buttons">
+            <button type="button" id="login-button">登录</button>
+            <button type="button" onclick="window.location.href = '/toRegister'">注册</button>
+        </div>
     </div>
-  </div>
-  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
-  <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.4/qs.min.js"></script>
-  <script>
-    document.getElementById("login-button").onclick = function () {
-      const name = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-      const code = document.getElementById("captcha").value;
-      let data = {
-        'password': pass,
-        'code': code,
-        'username': name,
-      };
-      axios({
-        method: 'post',
-        url: '/toLogin',
-        data: data,
-      }).then((res)=>{
-        console.log(res);
-        alert("登陆成功");
-        window.sessionStorage.setItem('token', res.data.token);
-      }).catch((error)=>{
-        console.log((error));
-        if (error.response) {
-          alert("账号密码错误");
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log('Error', error.message);
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.4/qs.min.js"></script>
+    <script>
+        let getImage = () => {
+            axios({
+                method: 'get',
+                url: '/captchaImage',
+            }).then((res) => {
+                console.log(res);
+                window.sessionStorage.setItem('uuid', res.data.uuid);
+                document.getElementById("code").src = `data:image/jpeg;base64,${res.data.img}`;
+            });
         }
-      });
-    }
-    document.getElementById("code").onclick = function () {
-      axios({
-        method: 'get',
-        url: '/captchaImage',
-        responseType: 'blob',
-      }).then((res) => {
-        document.getElementById("code").src = window.URL.createObjectURL(res.data);
-      })
-    }
-  </script>
+        axios.interceptors.request.use(req => {
+            console.log(req.url,`Bearer ${window.sessionStorage.getItem('token')}`);
+            if (req.url == '/toMain') {
+                req.headers.Authorization = `Bearer ${window.sessionStorage.getItem('token')}`;
+                console.log(req);
+            }else{
+                return req;
+            }
+
+
+        }, err => {
+            console.log(err);
+            return Promise.reject(err)
+        })
+        window.onload = function () {
+            getImage();
+            console.log(window.sessionStorage.getItem('token'));
+            // if (window.sessionStorage.getItem('token')) {
+            //     let data = {
+            //         'password': '',
+            //         'code': '',
+            //         'username': '',
+            //         'uuid': '',
+            //     };
+            //     axios({
+            //         method: 'post',
+            //         url: '/toLogin',
+            //         headers: {
+            //             'Content-Type': 'application/x-www-form-urlencoded',
+            //             'Authorization': `Bearer ${window.sessionStorage.getItem('token')}`,
+            //         },
+            //         data: data,
+            //     }).then((res) => {
+            //         console.log(res);
+            //         alert("登陆成功");
+            //         window.sessionStorage.setItem('token', res.data.token);
+            //     }).catch((error) => {
+            //         // httpRequest.requestImage.request();
+            //         console.log((error));
+            //         if (error.response) {
+            //             alert("登录失败");
+            //             console.log(error.response.data);
+            //         } else if (error.request) {
+            //             console.log(error.request);
+            //         } else {
+            //             console.log('Error', error.message);
+            //         }
+            //     });
+            // }
+        }
+        document.getElementById("login-button").onclick = function () {
+            const name = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            const code = document.getElementById("captcha").value;
+            let data = {
+                'password': pass,
+                'code': code,
+                'username': name,
+                'uuid': window.sessionStorage.getItem('uuid'),
+            };
+            axios({
+                method: 'post',
+                url: '/toLogin',
+                headers: {
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                    // 'Authorization': `Bearer ${window.sessionStorage.getItem('token')}`,
+                },
+                data: data,
+            }).then((res) => {
+                console.log(res);
+                alert("登陆成功");
+                window.sessionStorage.setItem('token', res.data.token);
+                window.sessionStorage.removeItem('uuid');
+                // axios({
+                //     method: 'post',
+                //     url: '/toLogin',
+                //     data: data,
+                // })
+            }).catch((error) => {
+                console.log((error));
+                if (error.response) {
+                    alert("账号密码错误");
+                    console.log(error.response.data);
+                } else if (error.request) {
+                    console.log(error.request);
+                } else {
+                    console.log('Error', error.message);
+                }
+            });
+        }
+        document.getElementById("code").onclick = getImage;
+    </script>
 
 </div>
 

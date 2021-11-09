@@ -58,7 +58,7 @@ public class CaptchaController {
         redisCache.setCacheObject(verifyKey, verifyCode, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
         //生成图片
         int w = 100, h = 30;
-        ajax.put("img", CaptchaUtils.outputImage(w, h, verifyCode));
+        ajax.put("img", Base64.encode(CaptchaUtils.outputImage(w, h, verifyCode)));
         return ajax;
     }
 

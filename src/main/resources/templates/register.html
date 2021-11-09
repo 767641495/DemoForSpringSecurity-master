@@ -99,6 +99,7 @@
           'password': pass1,
           'phone': phone,
           'inputCode': phoneCode,
+          'uuid': window.sessionStorage.getItem('uuid'),
         });
         axios({
           method: 'post',
@@ -110,6 +111,7 @@
         }).then((res) => {
           console.log(res);
           alert("注册成功");
+          window.sessionStorage.removeItem('uuid');
           window.location.href = '/toLogin'
         }).catch((error) => {
           console.log(error);

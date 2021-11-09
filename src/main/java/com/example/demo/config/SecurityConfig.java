@@ -76,7 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // url 拦截
                 // .antMatcher("/swagger-ui/*").anonymous().and()
                 .authorizeRequests()
-                .antMatchers("/", "/toLogin", "/captchaImage", "/toRegister", "/register", "/captchaPhone", "/swagger-ui/**").anonymous()
+                .antMatchers(HttpMethod.GET, "/", "/toLogin", "/captchaImage", "/toRegister", "/captchaPhone", "/swagger-ui/**").anonymous()
+                .antMatchers(HttpMethod.POST, "/register", "/toLogin").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
@@ -88,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/profile/**"
                 ).permitAll()
                 // 所有的请求都必须被认证。必须登录后才能访问。
-                // .anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 // 基于token，所以不需要session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -99,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加CORS filter
                 .addFilterBefore(myCorsFilter, JwtAuthenticationTokenFilter.class)
                 .addFilterBefore(myCorsFilter, LogoutFilter.class);

@@ -24,7 +24,7 @@ public class CaptchaFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         // /authentication/form是认证时的请求接口，验证码校验只需要匹配这个接口即可
-        if (StringUtils.equals("/authentication/form", request.getRequestURI()) &&
+        if (StringUtils.equals("/toLogin", request.getRequestURI()) &&
                 StringUtils.equalsAnyIgnoreCase(request.getMethod(), "post")) {
             String result = validate(request);
             if (!StringUtils.equals(result, "success")) {
