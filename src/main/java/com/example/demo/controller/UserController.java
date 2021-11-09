@@ -1,16 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.SysUser;
-import com.example.demo.pojo.AjaxResult;
-import com.example.demo.pojo.Constants;
-import com.example.demo.pojo.LoginBody;
-import com.example.demo.pojo.LoginUser;
+import com.example.demo.pojo.*;
 import com.example.demo.service.ISysUserService;
 import com.example.demo.service.SysLoginService;
 import com.example.demo.service.TokenService;
 import com.example.demo.utils.IpUtils;
 import com.example.demo.utils.RedisCache;
 import com.example.demo.utils.RiskControl;
+import com.example.demo.utils.StringUtils;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +45,13 @@ public class UserController {
 
     @ApiOperation("用户登陆")
     @PostMapping("/toLogin")
-    public AjaxResult toLogin(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginBody loginBody) throws IOException {
-        riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request), response);
+    public AjaxResult toLogin(HttpServletRequest request, @RequestBody LoginBody loginBody) throws IOException {
+        AjaxResult ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
+        if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
+            return ajax;
+        }
 
-        AjaxResult ajax = AjaxResult.success();
+        ajax = AjaxResult.success();
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
         ajax.put(Constants.TOKEN, token);
         return ajax;
@@ -58,10 +59,16 @@ public class UserController {
 
     @ApiOperation("注册用户")
     @PostMapping("/register")
-    public AjaxResult toRegister(HttpServletRequest request, HttpServletResponse response, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) throws IOException {
+    public AjaxResult toRegister(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) throws IOException {
         String ip = IpUtils.getIpAddr(request);
-        riskControl.updateAndJudgeIp(ip, response);
-        riskControl.updatePhoneToIP(ip, phone, response);
+        AjaxResult ajax = riskControl.updateAndJudgeIp(ip);
+        if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
+            return ajax;
+        }
+        ajax = riskControl.updatePhoneToIP(ip, phone);
+        if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
+            return ajax;
+        }
 
         SysUser sysUser = new SysUser(username, password, phone);
         if (!checkCode(inputCode, uuid)) {

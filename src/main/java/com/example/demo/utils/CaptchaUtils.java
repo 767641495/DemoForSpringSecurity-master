@@ -1,11 +1,12 @@
 package com.example.demo.utils;
 
+import org.springframework.util.FastByteArrayOutputStream;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Random;
@@ -63,13 +64,14 @@ public class CaptchaUtils {
     /**
      * 输出指定验证码图片流
      *
+     * @param os
      * @param w
      * @param h
-     * @param os
      * @param code
+     * @return
      * @throws IOException
      */
-    public static void outputImage(int w, int h, OutputStream os, String code) throws IOException {
+    public static byte[] outputImage(int w, int h, String code) throws IOException {
         int verifySize = code.length();
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Random rand = new Random();
@@ -127,9 +129,10 @@ public class CaptchaUtils {
             g2.setTransform(affine);
             g2.drawChars(chars, i, 1, ((w - 10) / verifySize) * i + 5, h / 2 + fontSize / 2 - 10);
         }
-
+        FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         g2.dispose();
         ImageIO.write(image, "jpg", os);
+        return os.toByteArray();
     }
 
     private static Color getRandColor(int fc, int bc) {
