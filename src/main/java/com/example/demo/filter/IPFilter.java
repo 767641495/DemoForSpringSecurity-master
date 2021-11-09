@@ -32,7 +32,7 @@ public class IPFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        AjaxResult ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
+        AjaxResult ajax = riskControl.judgeIp(IpUtils.getIpAddr(request));
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             response.setContentType("application/json;charset=UTF-8");
             PrintWriter out = response.getWriter();

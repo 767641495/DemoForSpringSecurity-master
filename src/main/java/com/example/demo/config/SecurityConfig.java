@@ -85,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/profile/**"
                 ).permitAll()
                 // 所有的请求都必须被认证。必须登录后才能访问。
-                .anyRequest().authenticated()
+                // .anyRequest().authenticated()
                 .and()
                 // 基于token，所以不需要session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

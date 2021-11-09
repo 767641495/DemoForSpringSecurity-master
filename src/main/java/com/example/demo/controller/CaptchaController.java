@@ -64,7 +64,7 @@ public class CaptchaController {
 
     @ApiOperation("手机验证码生成")
     @GetMapping(value = "/captchaPhone")
-    public AjaxResult getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) throws IOException {
+    public AjaxResult getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) {
         AjaxResult ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;

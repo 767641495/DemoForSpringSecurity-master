@@ -2,16 +2,11 @@ package com.example.demo.utils;
 
 import com.example.demo.pojo.AjaxResult;
 import com.example.demo.pojo.Constants;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.deploy.net.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -28,9 +23,9 @@ public class RiskControl {
     private Set<String> blackSet;
 
     // 判断ip是否在永久黑名单或者临时黑名单里
-    public AjaxResult judgeIP(String ip) {
-        String temporary_key = Constants.TEMPORARY_ZSET + ip;
-        String black_key = Constants.BLACK_SET + ip;
+    public AjaxResult judgeIp(String ip) {
+        String temporary_key = Constants.TEMPORARY_ZSET;
+        String black_key = Constants.BLACK_SET;
         String visit_key = Constants.VISIT_PREFIX + ip;
 
         num = redisCache.getCacheObject(visit_key);
@@ -45,7 +40,7 @@ public class RiskControl {
     }
 
     public AjaxResult updateAndJudgeIp(String ip) {
-        judgeIP(ip);
+        judgeIp(ip);
 
         String visit_key = Constants.VISIT_PREFIX + ip;
         if (num == null) {
@@ -61,7 +56,7 @@ public class RiskControl {
     }
 
     public AjaxResult updatePhoneToIP(String ip, String phone) throws IOException {
-        judgeIP(ip);
+        judgeIp(ip);
         String ipPhoneKey = Constants.IP_PHONE_PREFIX + ip;
         Long cnt = redisCache.addCacheSet(ipPhoneKey, phone);
         // 一个ip下绑定超过6台手机，增加一次违法次数

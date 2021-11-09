@@ -46,6 +46,8 @@ public class UserController {
     @ApiOperation("用户登陆")
     @PostMapping("/toLogin")
     public AjaxResult toLogin(HttpServletRequest request, @RequestBody LoginBody loginBody) {
+        AjaxResult ajax = AjaxResult.success();
+
         String uuid = loginBody.getUuid();
         //设置redis的key，这里设置为项目名:使用的字段:用户Id
         String redisKey = Constants.CAPTCHA_CODE_KEY + uuid;
@@ -68,13 +70,13 @@ public class UserController {
         // 校验成功之后，从redis中移除验证码
         redisCache.deleteObject(redisKey);
 
-        AjaxResult ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
+        ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;
         }
-        ajax = AjaxResult.success();
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
         ajax.put(Constants.TOKEN, token);
+
         return ajax;
     }
 

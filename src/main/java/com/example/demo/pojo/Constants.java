@@ -148,7 +148,7 @@ public class Constants {
     /**
      * ip临时黑名单
      */
-    public static final String TEMPORARY_ZSET = "forbidden_ip_set";
+    public static final String TEMPORARY_ZSET = "temporary_forbidden_set";
 
     /**
      * ip永久黑名单
@@ -159,4 +159,9 @@ public class Constants {
      * 单个ip下注册的手机号
      */
     public static final String IP_PHONE_PREFIX = "ip_phone";
+
+    /**
+     * 是否需要验证码
+     */
+    public static final String CAPTCHA_FLAG = "captcha_flag";
 }
