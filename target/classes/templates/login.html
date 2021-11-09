@@ -117,7 +117,7 @@
             $("#cutImg").css("width", ImageMsg.cutImageWidth);
             $("#cutImg").css("height", ImageMsg.cutImageHeight);
             $("#cutImg").css("top", ImageMsg.ypos);
-            $(".box").css("display", "block");
+            $(".box").css("display", "flex");
         }
 
         let httpRequest = {
@@ -145,10 +145,8 @@
                 path: "slider/verification",
                 request: function () {
                     $.get(httpRequest.requestVerification.path, { moveX: (moveX) }, function (data, status) {
-                        console.log(data)
                         console.log(data.code);
-                        console.log(data.message);
-                        if (data.data == true) {
+                        if (data.code == 200) {
                             checkSuccessHandle();
                         } else {
                             checkFailHandle();
@@ -198,7 +196,7 @@
         //检测滑块　位置是否正确
         function checkLocation() {
             moveEnable = false;
-            $("#box").css("display", "none");
+            $(".box").css("display", "none");
             //后端请求检测滑块位置
             httpRequest.requestVerification.request();
         }
