@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.entity.SysUser;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -15,7 +16,7 @@ public interface SysUserMapper {
 
     boolean deleteUserByUserId(Long userId);
 
-    boolean updatePasswordByUserName(String userName, String password);
+    boolean updatePasswordByUserName(@Param("userName") String userName,@Param("password") String password);
 
-    boolean updateUserProfile(Long userId, String loginIp, Date loginDate);
+    boolean updateUserProfile(@Param("userId") Long userId, @Param("loginIp")  String loginIp, @Param("loginDate")  Date loginDate);
 }

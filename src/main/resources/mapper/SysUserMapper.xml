@@ -51,8 +51,8 @@
 
     <update id="updateUserProfile">
         update sysuser
-        set login_ip   = #{arg1},
-            login_date = #{arg2}
-        where user_id = #{arg0}
+        set login_ip   = #{loginIp},
+            login_date = #{loginDate}
+        where user_id = #{userId}
     </update>
 </mapper>
