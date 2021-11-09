@@ -32,4 +32,11 @@ public class RouterController {
     public String main() {
         return "main";
     }
+
+    @ApiOperation("访问主页")
+    @PostMapping("/toMain")
+    @ResponseBody
+    public String toMain() {
+        return "main";
+    }
 }

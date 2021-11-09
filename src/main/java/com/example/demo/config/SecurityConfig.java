@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.filter.CaptchaFilter;
 import com.example.demo.filter.IPFilter;
 import com.example.demo.filter.JwtAuthenticationTokenFilter;
 import com.example.demo.filter.MyCorsFilter;
@@ -42,9 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MyCorsFilter myCorsFilter;
 
     @Autowired
-    private CaptchaFilter captchaFilter;
-
-    @Autowired
     private IPFilter ipFilter;
 
 
@@ -76,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // url 拦截
                 // .antMatcher("/swagger-ui/*").anonymous().and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/", "/toLogin", "/captchaImage", "/toRegister", "/captchaPhone", "/swagger-ui/**").anonymous()
+                .antMatchers(HttpMethod.GET, "/", "/toLogin", "/captchaImage", "/toRegister", "/captchaPhone", "/swagger-ui/**", "/toMain").anonymous()
                 .antMatchers(HttpMethod.POST, "/register", "/toLogin").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
@@ -99,7 +95,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(myLogoutSuccessHandler)
                 .and()
                 .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 添加CORS filter
                 .addFilterBefore(myCorsFilter, JwtAuthenticationTokenFilter.class)

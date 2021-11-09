@@ -53,20 +53,6 @@
                 document.getElementById("code").src = `data:image/jpeg;base64,${res.data.img}`;
             });
         }
-        axios.interceptors.request.use(req => {
-            console.log(req.url,`Bearer ${window.sessionStorage.getItem('token')}`);
-            if (req.url == '/toMain') {
-                req.headers.Authorization = `Bearer ${window.sessionStorage.getItem('token')}`;
-                console.log(req);
-            }else{
-                return req;
-            }
-
-
-        }, err => {
-            console.log(err);
-            return Promise.reject(err)
-        })
         window.onload = function () {
             getImage();
             console.log(window.sessionStorage.getItem('token'));
@@ -113,6 +99,7 @@
                 'username': name,
                 'uuid': window.sessionStorage.getItem('uuid'),
             };
+            console.log(data);
             axios({
                 method: 'post',
                 url: '/toLogin',
@@ -123,14 +110,15 @@
                 data: data,
             }).then((res) => {
                 console.log(res);
-                alert("登陆成功");
-                window.sessionStorage.setItem('token', res.data.token);
-                window.sessionStorage.removeItem('uuid');
-                // axios({
-                //     method: 'post',
-                //     url: '/toLogin',
-                //     data: data,
-                // })
+                if(res.data.code==500) {
+                    alert(res.data.msg);
+                } else {
+                    console.log(res);
+                    alert("登陆成功");
+                    window.sessionStorage.setItem('token', res.data.token);
+                    window.sessionStorage.removeItem('uuid');
+                    window.location.href = '/toMain';
+                }
             }).catch((error) => {
                 console.log((error));
                 if (error.response) {

@@ -45,12 +45,33 @@ public class UserController {
 
     @ApiOperation("用户登陆")
     @PostMapping("/toLogin")
-    public AjaxResult toLogin(HttpServletRequest request, @RequestBody LoginBody loginBody) throws IOException {
+    public AjaxResult toLogin(HttpServletRequest request, @RequestBody LoginBody loginBody) {
+        String uuid = loginBody.getUuid();
+        //设置redis的key，这里设置为项目名:使用的字段:用户Id
+        String redisKey = Constants.CAPTCHA_CODE_KEY + uuid;
+        String captcha = redisCache.getCacheObject(redisKey);
+
+        // 从客户端接收到的验证码
+        String captchaParam = loginBody.getCode();
+
+        if (StringUtils.isEmpty(captchaParam)) {
+            return AjaxResult.error("验证码不能为空");
+        }
+
+        if (captcha == null) {
+            return AjaxResult.error("验证码不存在");
+        }
+
+        if (!StringUtils.equalsAnyIgnoreCase(captcha, captchaParam)) {
+            return AjaxResult.error("验证码不匹配");
+        }
+        // 校验成功之后，从redis中移除验证码
+        redisCache.deleteObject(redisKey);
+
         AjaxResult ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;
         }
-
         ajax = AjaxResult.success();
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
         ajax.put(Constants.TOKEN, token);
