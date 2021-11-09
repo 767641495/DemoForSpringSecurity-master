@@ -22,7 +22,7 @@ public class SliderController {
 
     private int xPosCache = 0;
 
-    @GetMapping("/judge")
+    @RequestMapping("/judge")
     public AjaxResult judge(HttpServletRequest request) {
         AjaxResult ajax = AjaxResult.success();
         String infraction_key = Constants.INFRACTION_PREFIX + IpUtils.getIpAddr(request);
@@ -49,7 +49,7 @@ public class SliderController {
         }
     }
 
-    @PostMapping("/verification")
+    @RequestMapping("/verification")
     public AjaxResult verification(@RequestParam("moveX") int moveX) {
         int MOVE_CHECK_ERROR = 2;
         if ((moveX < (xPosCache + MOVE_CHECK_ERROR))
@@ -57,6 +57,6 @@ public class SliderController {
             log.info("验证正确");
             return AjaxResult.success();
         }
-        return AjaxResult.error("密码错误");
+        return AjaxResult.error("验证错误");
     }
 }

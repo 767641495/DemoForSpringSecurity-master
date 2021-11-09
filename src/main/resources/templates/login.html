@@ -97,7 +97,7 @@
               data: data,
           }).then((res) => {
               console.log(res);
-              if (res.data.code == 500) {
+              if (res.data.code === 500) {
                   alert(res.data.msg);
               } else {
                   console.log(res);

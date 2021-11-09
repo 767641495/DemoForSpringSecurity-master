@@ -2,275 +2,292 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=drive-width,initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="./css/login.css">
-    <!--  <link rel="stylesheet" href="./css/regist.css">-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
-          rel="stylesheet" type="text/css" th:href="@{css/login.css}">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=drive-width,initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./css/login.css">
+  <!--  <link rel="stylesheet" href="./css/regist.css">-->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen"
+        rel="stylesheet" type="text/css" th:href="@{css/login.css}">
+  <title>Login</title>
 </head>
 
 <body>
 <div id="login-box">
-    <h1>Login</h1>
-    <div class="form">
-        <div class="item">
-            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-            <input type="text" id="username" placeholder="账号"/>
-        </div>
-
-        <div class="item">
-            <i class="fa fa-key" aria-hidden="true"></i>
-            <input type="password" id="password" placeholder="密码">
-        </div>
-
-        <div class="item">
-            <i class="fa fa-key" aria-hidden="true"></i>
-            <input type="text" id="captcha" placeholder="验证码">
-        </div>
-
-        <div>
-            <img src="" alt="验证码" id="code"/>
-        </div>
-
-        <div class="buttons">
-            <button type="button" id="login-button">登录</button>
-            <button type="button" onclick="window.location.href = '/toRegister'">注册</button>
-        </div>
-        <div class="box">
-            <div id="captchaContainer">
-                <!-- 标题栏　-->
-                <div class="header">
-                    <span class="headerText">图片滑动验证</span>
-                    <span class="refreshIcon">
-                </div>
-                <!-- 图片显示区域　-->
-                <div id="captchaImg">
-                    <img id="oriImg" src="dd" alt="原图" />
-                    <img id="cutImg" src="sa" alt="抠图" />
-                </div>
-                <!--滑块显示区域-->
-                <div class="sliderContainer">
-                    <div class="sliderMask">
-                        <div class="slider">
-                            <span class="sliderIcon"></span>
-                        </div>
-                    </div>
-                    <span class="sliderText">向右滑动填充拼图</span>
-                </div>
-            </div>
-        </div>
+  <h1>Login</h1>
+  <div class="form">
+    <div class="item">
+      <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+      <input type="text" id="username" placeholder="账号"/>
     </div>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.4/qs.min.js"></script>
-    <script>
-        $(".box").css("display", "none");
-        $(".box").on("click",function (event) {
-            // console.log(event)
-            event.stopPropagation();
-        })
-        //图片显示使用base64时的前缀,src=base64PrefixPath + imgBase64Value
-        let base64PrefixPath = "data:image/png;base64,";
-        let IMAGE_WIDTH = 300;
-        //初始化
-        //滑块初始偏移量
-        let sliderInitOffset = 0;
-        //滑块移动的最值
-        let MIN_MOVE = 0;
-        let MAX_MOVE = 0;
-        //鼠标按下标志
-        let mousedownFlag = false;
-        //滑块移动的距离
-        let moveX;
-        //滑块位置检测允许的误差，正负２
-        let MOVE_CHECK_ERROR = 2;
-        //滑块滑动使能
-        let moveEnable = true;
-        let ImageMsg = {
-            //抠图的坐标
-            xpos: 0,
-            ypos: 0,
-            //抠图的大小
-            cutImageWidth: 0,
-            cutImageHeight: 0,
-            //原图的base64
-            oriImageSrc: 0,
-            //抠图的base64
-            cutImageSrc: 0,
-        }
 
-        //加载页面时进行初始化
-        function init() {
-            console.log("init")
-            moveEnable = true;
-            mousedownFlag = false;
-            $(".slider").css("left", 0 + "px");
-            initClass();
-            MAX_MOVE = IMAGE_WIDTH - ImageMsg.cutImageWidth;
-            console.log("ImageMsg = " + ImageMsg);
-            $("#cutImg").css("left", 0 + "px");
-            $("#oriImg").attr("src", ImageMsg.oriImageSrc);
-            $("#cutImg").attr("src", ImageMsg.cutImageSrc);
-            $("#cutImg").css("width", ImageMsg.cutImageWidth);
-            $("#cutImg").css("height", ImageMsg.cutImageHeight);
-            $("#cutImg").css("top", ImageMsg.ypos);
-            $(".box").css("display", "flex");
-        }
+    <div class="item">
+      <i class="fa fa-key" aria-hidden="true"></i>
+      <input type="password" id="password" placeholder="密码">
+    </div>
 
-        let httpRequest = {
-            //请求获取图片
-            requestImage: {
-                path: "slider/image",
-                request: function () {
-                    $.get(httpRequest.requestImage.path, function (data, status) {
-                        console.log(data)
-                        console.log(data.message);
-                        if (data.data != null) {
-                            ImageMsg.oriImageSrc = base64PrefixPath + data.data.oriImage;
-                            ImageMsg.cutImageSrc = base64PrefixPath + data.data.cutImage;
-                            ImageMsg.xpos = data.data.xpos;
-                            ImageMsg.ypos = data.data.ypos;
-                            ImageMsg.cutImageWidth = data.data.cutImageWidth;
-                            ImageMsg.cutImageHeight = data.data.cutImageHeight;
-                            init();
-                        }
-                    });
-                },
-            },
-            //请求验证
-            requestVerification: {
-                path: "slider/verification",
-                request: function () {
-                    $.get(httpRequest.requestVerification.path, { moveX: (moveX) }, function (data, status) {
-                        console.log(data.code);
-                        if (data.code == 200) {
-                            checkSuccessHandle();
-                        } else {
-                            checkFailHandle();
-                        }
-                    });
-                },
-            },
-        }
+    <div class="item">
+      <i class="fa fa-key" aria-hidden="true"></i>
+      <input type="text" id="captcha" placeholder="验证码">
+    </div>
 
-        //刷新图片操作
-        $(".refreshIcon").on("click", function () {
-            console.log("free");
-            httpRequest.requestImage.request();
-        })
+    <div>
+      <img src="" alt="验证码" id="code"/>
+    </div>
 
-        //滑块鼠标按下
-        $(".slider").mousedown(function (event) {
-            console.log("鼠标按下mousedown:" + event.clientX + " " + event.clientY);
-            sliderInitOffset = event.clientX;
-            mousedownFlag = true;
-            //滑块绑定鼠标滑动事件
-            $(".slider").on("mousemove", function (event) {
-                if (mousedownFlag == false) {
-                    return;
-                }
-                if (moveEnable == false) {
-                    return
-                }
-                moveX = event.clientX - sliderInitOffset;
-                moveX < MIN_MOVE ? moveX = MIN_MOVE : moveX = moveX;
-                moveX > MAX_MOVE ? moveX = MAX_MOVE : moveX = moveX;
-                $(this).css("left", moveX + "px");
-                $("#cutImg").css("left", moveX + "px");
-            })
-        })
+    <div class="buttons">
+      <button type="button" id="login-button">登录</button>
+      <button type="button" onclick="window.location.href = '/toRegister'">注册</button>
+    </div>
+    <div class="box">
+      <div id="captchaContainer">
+        <!-- 标题栏　-->
+        <div class="header">
+          <span class="headerText">图片滑动验证</span>
+          <span class="refreshIcon"></span>
+        </div>
+        <!-- 图片显示区域　-->
+        <div id="captchaImg">
+          <img id="oriImg" src="dd" alt="原图"/>
+          <img id="cutImg" src="sa" alt="抠图"/>
+        </div>
+        <!--滑块显示区域-->
+        <div class="sliderContainer">
+          <div class="sliderMask">
+            <div class="slider">
+              <span class="sliderIcon"></span>
+            </div>
+          </div>
+          <span class="sliderText">向右滑动填充拼图</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.4/qs.min.js"></script>
+  <script>
+      let getImage = () => {
+          axios({
+              method: 'get',
+              url: '/captchaImage',
+          }).then((res) => {
+              console.log(res);
+              window.sessionStorage.setItem('uuid', res.data.uuid);
+              document.getElementById("code").src = `data:image/jpeg;base64,${res.data.img}`;
+          }).catch((error) => {
+              alert(error.data.msg);
+              console.log(error);
+          });
+      }
+      let login = () => {
+          const name = document.getElementById("username").value;
+          const pass = document.getElementById("password").value;
+          const code = document.getElementById("captcha").value;
+          let data = {
+              'password': pass,
+              'code': code,
+              'username': name,
+              'uuid': window.sessionStorage.getItem('uuid'),
+          };
+          console.log(data);
+          axios({
+              method: 'post',
+              url: '/toLogin',
+              data: data,
+          }).then((res) => {
+              console.log(res);
+              if (res.data.code === 500) {
+                  alert(res.data.msg);
+              } else {
+                  console.log(res);
+                  alert("登陆成功");
+                  window.sessionStorage.setItem('token', res.data.token);
+                  window.sessionStorage.removeItem('uuid');
+                  window.location.href = '/toMain';
+              }
+          }).catch((error) => {
+              getImage();
+              console.log(error);
+              alert(error.data.msg);
 
-        //滑块鼠标弹起操作
-        $(".slider").mouseup(function (event) {
-            console.log("mouseup:" + event.clientX + " " + event.clientY);
-            sliderInitOffset = 0;
-            $(this).off("mousemove");
-            mousedownFlag = false;
-            console.log("moveX　＝　" + moveX)
-            checkLocation();
-        })
+          });
+      }
+  </script>
+  <script>
+      $(".box").css("display", "none");
+      $(".box").on("click", function (event) {
+          // console.log(event)
+          event.stopPropagation();
+      })
+      //图片显示使用base64时的前缀,src=base64PrefixPath + imgBase64Value
+      let base64PrefixPath = "data:image/png;base64,";
+      let IMAGE_WIDTH = 300;
+      //初始化
+      //滑块初始偏移量
+      let sliderInitOffset = 0;
+      //滑块移动的最值
+      let MIN_MOVE = 0;
+      let MAX_MOVE = 0;
+      //鼠标按下标志
+      let mousedownFlag = false;
+      //滑块移动的距离
+      let moveX;
+      //滑块位置检测允许的误差，正负２
+      let MOVE_CHECK_ERROR = 2;
+      //滑块滑动使能
+      let moveEnable = true;
+      let ImageMsg = {
+          //抠图的坐标
+          xpos: 0,
+          ypos: 0,
+          //抠图的大小
+          cutImageWidth: 0,
+          cutImageHeight: 0,
+          //原图的base64
+          oriImageSrc: 0,
+          //抠图的base64
+          cutImageSrc: 0,
+      }
 
-        //检测滑块　位置是否正确
-        function checkLocation() {
-            moveEnable = false;
-            $(".box").css("display", "none");
-            //后端请求检测滑块位置
-            httpRequest.requestVerification.request();
-        }
+      //加载页面时进行初始化
+      function init() {
+          console.log("init")
+          moveEnable = true;
+          mousedownFlag = false;
+          $(".slider").css("left", 0 + "px");
+          initClass();
+          MAX_MOVE = IMAGE_WIDTH - ImageMsg.cutImageWidth;
+          console.log("ImageMsg = " + ImageMsg);
+          $("#cutImg").css("left", 0 + "px");
+          $("#oriImg").attr("src", ImageMsg.oriImageSrc);
+          $("#cutImg").attr("src", ImageMsg.cutImageSrc);
+          $("#cutImg").css("width", ImageMsg.cutImageWidth);
+          $("#cutImg").css("height", ImageMsg.cutImageHeight);
+          $("#cutImg").css("top", ImageMsg.ypos);
+          $(".box").css("display", "flex");
+      }
 
-        function checkSuccessHandle() {
-            alert("验证成功");
-        }
-        function checkFailHandle() {
-            alert("验证失败");
-        }
+      let httpRequest = {
+          //请求获取图片
+          requestImage: {
+              path: "slider/image",
+              request: function () {
+                  $.get(httpRequest.requestImage.path, function (data, status) {
+                      console.log(data);
+                      console.log(data.message);
+                      if (data.data != null) {
+                          ImageMsg.oriImageSrc = base64PrefixPath + data.data.oriImage;
+                          ImageMsg.cutImageSrc = base64PrefixPath + data.data.cutImage;
+                          ImageMsg.xpos = data.data.xpos;
+                          ImageMsg.ypos = data.data.ypos;
+                          ImageMsg.cutImageWidth = data.data.cutImageWidth;
+                          ImageMsg.cutImageHeight = data.data.cutImageHeight;
+                          init();
+                      }
+                  });
+              },
+          },
+          //请求验证
+          requestVerification: {
+              path: "slider/verification",
+              request: function () {
+                  $.get(httpRequest.requestVerification.path, {moveX: (moveX)}, function (data, status) {
+                      console.log(data.code);
+                      if (data.code == 200) {
+                          checkSuccessHandle();
+                      } else {
+                          checkFailHandle();
+                      }
+                  });
+              },
+          },
+      }
 
-        function initClass() {
-            $(".sliderContainer").removeClass("sliderContainer_success");
-            $(".slider").removeClass("slider_success");
-            $(".sliderContainer").removeClass("sliderContainer_fail");
-            $(".slider").removeClass("slider_fail");
-        }
-    </script>
-    <script>
-        let getImage = () => {
-            axios({
-                method: 'get',
-                url: '/captchaImage',
-            }).then((res) => {
-                console.log(res);
-                window.sessionStorage.setItem('uuid', res.data.uuid);
-                document.getElementById("code").src = `data:image/jpeg;base64,${res.data.img}`;
-            });
-        }
-        window.onload = function () {
-            getImage();
-        }
-        document.getElementById("login-button").onclick = function () {
-            const name = document.getElementById("username").value;
-            const pass = document.getElementById("password").value;
-            const code = document.getElementById("captcha").value;
-            let data = {
-                'password': pass,
-                'code': code,
-                'username': name,
-                'uuid': window.sessionStorage.getItem('uuid'),
-            };
-            console.log(data);
-            axios({
-                method: 'post',
-                url: '/toLogin',
-                data: data,
-            }).then((res) => {
-                console.log(res)
-                if(res.data.captcha_flag) {
-                    httpRequest.requestImage.request();
-                } else if(res.data.code==500) {
-                    alert(res.data.msg);
-                } else {
-                    console.log(res);
-                    alert("登陆成功");
-                    window.sessionStorage.setItem('token', res.data.token);
-                    window.sessionStorage.removeItem('uuid');
-                    // window.location.href = '/toMain';
-                }
-            }).catch((error) => {
-                console.log((error));
-                if (error.response) {
-                    alert("账号密码错误");
-                    console.log(error.response.data);
-                } else if (error.request) {
-                    console.log(error.request);
-                } else {
-                    console.log('Error', error.message);
-                }
-            });
-        }
-        document.getElementById("code").onclick = getImage;
-    </script>
+      //刷新图片操作
+      $(".refreshIcon").on("click", function () {
+          console.log("free");
+          httpRequest.requestImage.request();
+      })
+
+      //滑块鼠标按下
+      $(".slider").mousedown(function (event) {
+          console.log("鼠标按下mousedown:" + event.clientX + " " + event.clientY);
+          sliderInitOffset = event.clientX;
+          mousedownFlag = true;
+          //滑块绑定鼠标滑动事件
+          $(".slider").on("mousemove", function (event) {
+              if (mousedownFlag == false) {
+                  return;
+              }
+              if (moveEnable == false) {
+                  return
+              }
+              moveX = event.clientX - sliderInitOffset;
+              moveX < MIN_MOVE ? moveX = MIN_MOVE : moveX = moveX;
+              moveX > MAX_MOVE ? moveX = MAX_MOVE : moveX = moveX;
+              $(this).css("left", moveX + "px");
+              $("#cutImg").css("left", moveX + "px");
+          })
+      })
+
+      //滑块鼠标弹起操作
+      $(".slider").mouseup(function (event) {
+          console.log("mouseup:" + event.clientX + " " + event.clientY);
+          sliderInitOffset = 0;
+          $(this).off("mousemove");
+          mousedownFlag = false;
+          console.log("moveX　＝　" + moveX)
+          checkLocation();
+      })
+
+      //检测滑块　位置是否正确
+      function checkLocation() {
+          moveEnable = false;
+          $(".box").css("display", "none");
+          //后端请求检测滑块位置
+          httpRequest.requestVerification.request();
+      }
+
+      function checkSuccessHandle() {
+          login();
+          alert("验证成功");
+      }
+
+      function checkFailHandle() {
+          alert("验证失败");
+      }
+
+      function initClass() {
+          $(".sliderContainer").removeClass("sliderContainer_success");
+          $(".slider").removeClass("slider_success");
+          $(".sliderContainer").removeClass("sliderContainer_fail");
+          $(".slider").removeClass("slider_fail");
+      }
+  </script>
+  <script>
+      window.onload = function () {
+          getImage();
+      }
+      document.getElementById("login-button").onclick = function () {
+          axios({
+              method: 'get',
+              url: '/slider/judge',
+          }).then((res) => {
+              console.log(res);
+              if (res.data.captcha_flag) {
+                  httpRequest.requestImage.request();
+              } else {
+                  login();
+              }
+          }).catch((error) => {
+              console.log(error)
+              alert(error.data.msg);
+              console.log(error);
+          });
+      };
+      document.getElementById("code").onclick = getImage;
+  </script>
 
 </div>
 
