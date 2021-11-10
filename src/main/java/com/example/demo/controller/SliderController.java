@@ -10,14 +10,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
+/**
+ * @author Riter
+ * @description 滑块控制
+ * @date 2021/11/10 11:16 下午
+ */
 @Slf4j
 @RestController
 @RequestMapping("/slider")
 public class SliderController {
 
-    @Autowired
+    @Resource
     private RedisCache redisCache;
 
     private int xPosCache = 0;

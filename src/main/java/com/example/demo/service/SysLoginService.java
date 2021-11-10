@@ -23,13 +23,13 @@ import javax.annotation.Resource;
 
 @Component
 public class SysLoginService {
-    @Autowired
+    @Resource
     private TokenService tokenService;
 
     @Resource
     private AuthenticationManager authenticationManager;
 
-    @Autowired
+    @Resource
     private ISysUserService userService;
 
     /**

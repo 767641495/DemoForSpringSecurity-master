@@ -19,8 +19,6 @@ import java.util.Random;
 
 @Slf4j
 public class ImgUtil {
-
-
     //图片的路径
     private String basePathClasspath = "img/";
     private String basePathFile = "src/main/resources/static/img/";

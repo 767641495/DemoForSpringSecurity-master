@@ -38,19 +38,4 @@ public class SysUser implements Serializable{
         this.password = password;
         this.phone = phone;
     }
-
-    public SysUser(Long userId, String userName, String password, String phone) {
-        this.userId = userId;
-        this.userName = userName;
-        this.password = password;
-        this.phone = phone;
-    }
-
-    public SysUser(Long userId, String userName, String password, String phone, Integer status) {
-        this.userId = userId;
-        this.userName = userName;
-        this.password = password;
-        this.phone = phone;
-        this.status = status;
-    }
 }

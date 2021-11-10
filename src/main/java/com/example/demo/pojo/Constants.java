@@ -1,7 +1,5 @@
 package com.example.demo.pojo;
 
-import com.example.demo.utils.DateUtils;
-
 /**
  * @program: DemoForSpringSecurity-master
  * @description: 常量

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.UUID;
@@ -27,10 +28,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class CaptchaController {
 
-    @Autowired
+    @Resource
     private RedisCache redisCache;
 
-    @Autowired
+    @Resource
     private RiskControl riskControl;
 
     @ApiOperation("图片验证码生成")
@@ -41,12 +42,8 @@ public class CaptchaController {
             return ajax;
         }
 
-
-        // 保存验证码信息
         String uuid = UUID.randomUUID().toString();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
-        // 生成随机字串
-
         String verifyCode = CaptchaUtils.generateVerifyCode(4);
         log.info("图形验证码" + verifyCode);
         ajax.put("uuid", uuid);
@@ -68,10 +65,8 @@ public class CaptchaController {
         if (!PhoneFormatCheckUtils.isChinaPhoneLegal(phone)) {
             return AjaxResult.error(phone + "不是中国大陆的手机号");
         }
-        // 保存验证码信息
         String uuid = UUID.randomUUID().toString();
         String verifyKey = Constants.CAPTCHA_PHONE_KEY + uuid;
-        // 生成随机字串
         String verifyCode = CaptchaUtils.generateMathCode(8);
         log.info("手机验证码：" + verifyCode);
         ajax.put("uuid", uuid);
