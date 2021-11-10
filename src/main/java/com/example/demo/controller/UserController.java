@@ -95,14 +95,14 @@ public class UserController {
         }
 
         SysUser sysUser = new SysUser(username, password, phone);
-        if (!checkCode(inputCode, uuid)) {
+        if (!checkCode(inputCode, phone, uuid)) {
             return AjaxResult.error("验证码错误");
         }
         if (sysUserService.selectCountByUserName(username) > 0) {
             return AjaxResult.error(username + "账号已存在");
         }
         if (sysUserService.selectCountByPhone(phone) > 0) {
-            redisCache.deleteObject(Constants.CAPTCHA_PHONE_KEY + uuid);
+            redisCache.deleteObject(Constants.CAPTCHA_PHONE_KEY + phone + uuid);
             return AjaxResult.error(phone + "手机号已存在");
         }
         if (sysUserService.insertUser(sysUser)) {
@@ -112,8 +112,8 @@ public class UserController {
     }
 
     @ApiOperation("校验手机验证码")
-    public Boolean checkCode(@RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) {
-        String redisKey = Constants.CAPTCHA_PHONE_KEY + uuid;
+    public Boolean checkCode(@RequestParam("inputCode") String inputCode, @RequestParam("phone") String phone, @RequestParam("uuid") String uuid) {
+        String redisKey = Constants.CAPTCHA_PHONE_KEY + phone + uuid;
         String realCode = redisCache.getCacheObject(redisKey);
         if (realCode != null && realCode.equals(inputCode)) {
             log.info("验证码校验成功");

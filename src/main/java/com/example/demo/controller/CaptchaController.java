@@ -6,7 +6,6 @@ import com.example.demo.pojo.HttpStatus;
 import com.example.demo.utils.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,7 +65,7 @@ public class CaptchaController {
             return AjaxResult.error(phone + "不是中国大陆的手机号");
         }
         String uuid = UUID.randomUUID().toString();
-        String verifyKey = Constants.CAPTCHA_PHONE_KEY + uuid;
+        String verifyKey = Constants.CAPTCHA_PHONE_KEY + phone + uuid;
         String verifyCode = CaptchaUtils.generateMathCode(8);
         log.info("手机验证码：" + verifyCode);
         ajax.put("uuid", uuid);

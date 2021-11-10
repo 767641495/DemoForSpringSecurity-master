@@ -10,7 +10,7 @@
             }
         }).then((res) => {
             console.log(res);
-            if(res.data.code==500) {
+            if (res.data.code == 500) {
                 window.location.href = '/toLogin';
             }
         }).catch((err) => {
@@ -20,8 +20,8 @@
     }
 </script>
 <head>
-  <meta charset="UTF-8">
-  <title>Main</title>
+    <meta charset="UTF-8">
+    <title>Main</title>
 </head>
 <body>
 
@@ -36,7 +36,7 @@
                 'Authorization': `Bearer ${window.sessionStorage.getItem('token')}`
             }
         }).then((res) => {
-            if (res.data.code == 500) {
+            if (res.data.code != 200) {
                 alert(res.data.msg);
             } else {
                 console.log(res);
