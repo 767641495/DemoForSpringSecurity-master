@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * @program: DemoForSpringSecurity-master
  * @description: 自定义账号密码校验类
@@ -23,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MyAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
+    @Resource
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired

@@ -4,7 +4,6 @@ import com.example.demo.entity.SysUser;
 import com.example.demo.pojo.LoginUser;
 import com.example.demo.utils.DateUtils;
 import com.example.demo.utils.IpUtils;
-import com.example.demo.utils.RedisCache;
 import com.example.demo.utils.ServletUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,7 +41,6 @@ public class SysLoginService {
      */
     public String login(String username, String password) {
 
-        // 用户验证
         Authentication authentication;
         try {
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
@@ -56,7 +54,6 @@ public class SysLoginService {
         }
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUser());
-        // 生成token
         return tokenService.createToken(loginUser);
     }
 

@@ -3,10 +3,7 @@ package com.example.demo.config;
 import com.example.demo.filter.IPFilter;
 import com.example.demo.filter.JwtAuthenticationTokenFilter;
 import com.example.demo.filter.MyCorsFilter;
-import com.example.demo.handler.MyAuthenticationFailureHandler;
-import com.example.demo.handler.MyAuthenticationSuccessHandler;
 import com.example.demo.handler.MyLogoutSuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,30 +16,29 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
+import javax.annotation.Resource;
+/***
+ * @author Riter
+ * @description 安全配置类
+ * @date 2021/11/10 11:04 下午
+ */
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+    @Resource
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
-    @Autowired
-    private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
-
-    @Autowired
-    private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
-
-    @Autowired
+    @Resource
     private MyLogoutSuccessHandler myLogoutSuccessHandler;
 
-    @Autowired
+    @Resource
     private MyAuthenticationProvider myAuthenticationProvider;
 
-    @Autowired
+    @Resource
     private MyCorsFilter myCorsFilter;
 
-    @Autowired
+    @Resource
     private IPFilter ipFilter;
-
 
     /**
      * anyRequest          |   匹配所有请求路径
@@ -66,11 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // 关闭 csrf 防护
                 .csrf().disable()
-                // 开启跨域
+                // 开启跨域防护，需要配合corsFilter的Bean使用
                 .cors()
                 .and()
                 // url 拦截
-                // .antMatcher("/swagger-ui/*").anonymous().and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/", "/toLogin", "/captchaImage", "/toRegister", "/captchaPhone", "/swagger-ui/**", "/toMain", "/slider/**").anonymous()
                 .antMatchers(HttpMethod.POST, "/register", "/toLogin").anonymous()
@@ -113,7 +108,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        // auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
         auth.authenticationProvider(myAuthenticationProvider);
     }
 

@@ -2,49 +2,49 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=drive-width,initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="./css/register.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-          rel="stylesheet" th:href="@{css/regist.css}">
-    <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=drive-width,initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="./css/register.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        rel="stylesheet" th:href="@{css/regist.css}">
+  <title>Register</title>
 </head>
 
 <body>
 <div id="login-box">
-    <h1>Register</h1>
-    <div class="form">
-        <span class="prompt">请输入用户名</span>
-        <div class="item">
-            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-            <input id="name" name="username" type="text" placeholder="Username"/>
-        </div>
-        <span class="prompt">请输入密码</span>
-        <div class="item">
-            <i class="fa fa-key" aria-hidden="true"></i>
-            <input id="pass1" name="password" type="password" placeholder="Password">
-        </div>
-        <span class="prompt">请再次输入密码</span>
-        <div class="item">
-            <i class="fa fa-key" aria-hidden="true"></i>
-            <input id="pass2" type="password" placeholder="Password">
-        </div>
-        <span class="prompt">请输入手机号</span>
-        <div class="item">
-            <i class="fa fa-key" aria-hidden="true"></i>
-            <input id="phone" type="text" placeholder="Phone">
-        </div>
-        <span class="prompt">请输入验证码</span>
-        <div class="item">
-            <input id="phone-code" type="text" placeholder="PhoneCode">
-            <button id="get-phone-code">获取验证码</button>
-        </div>
-        <div class="buttons">
-            <button type="button" id="regist-button">注册</button>
-            <button type="button" onclick="window.location.href = '/toLogin'">返回</button>
-        </div>
+  <h1>Register</h1>
+  <div class="form">
+    <span class="prompt">请输入用户名</span>
+    <div class="item">
+      <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+      <input id="name" name="username" type="text" placeholder="Username"/>
     </div>
+    <span class="prompt">请输入密码</span>
+    <div class="item">
+      <i class="fa fa-key" aria-hidden="true"></i>
+      <input id="pass1" name="password" type="password" placeholder="Password">
+    </div>
+    <span class="prompt">请再次输入密码</span>
+    <div class="item">
+      <i class="fa fa-key" aria-hidden="true"></i>
+      <input id="pass2" type="password" placeholder="Password">
+    </div>
+    <span class="prompt">请输入手机号</span>
+    <div class="item">
+      <i class="fa fa-key" aria-hidden="true"></i>
+      <input id="phone" type="text" placeholder="Phone">
+    </div>
+    <span class="prompt">请输入验证码</span>
+    <div class="item">
+      <input id="phone-code" type="text" placeholder="PhoneCode">
+      <button id="get-phone-code">获取验证码</button>
+    </div>
+    <div class="buttons">
+      <button type="button" id="regist-button">注册</button>
+      <button type="button" onclick="window.location.href = '/toLogin'">返回</button>
+    </div>
+  </div>
 </div>
 <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.4/qs.min.js"></script>
@@ -70,8 +70,15 @@
                 method: 'get',
                 url: `/captchaPhone?phone=${phone}`,
             }).then((res) => {
-                console.log(res);
-            })
+                if (res.data.code === 500) {
+                    alert(res.data.msg);
+                } else {
+                    console.log(res);
+                }
+            }).catch((error) => {
+                alert(error.data.msg);
+                console.log(error);
+            });
         } else {
             alert("手机号格式错误")
         }
@@ -109,18 +116,21 @@
                     },
                     data: data,
                 }).then((res) => {
-                    console.log(res);
-                    alert("注册成功");
-                    window.sessionStorage.removeItem('uuid');
-                    window.location.href = '/toLogin'
-                }).catch((error) => {
-                    console.log(error);
-                    if (error.request) {
-                        console.log(error.request);
+                    if (res.data.code === 500) {
+                        alert(res.data.msg);
                     } else {
-                        alert(error.data.msg);
-                        console.log('Error', error.message);
+                        console.log(res);
+                        alert("注册成功");
+                        window.sessionStorage.removeItem('uuid');
+                        window.location.href = '/toLogin'
                     }
+                }).catch((error) => {
+                    if(error.data?.msg) {
+                        alert(error.data.msg);
+                    } else {
+                        alert("此手机号或用户名已注册");
+                    }
+                    console.log(error);
                     document.getElementById("name").value = '';
                     document.getElementById("pass1").value = '';
                     document.getElementById("pass2").value = '';

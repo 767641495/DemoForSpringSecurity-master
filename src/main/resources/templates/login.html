@@ -72,9 +72,13 @@
               method: 'get',
               url: '/captchaImage',
           }).then((res) => {
-              console.log(res);
-              window.sessionStorage.setItem('uuid', res.data.uuid);
-              document.getElementById("code").src = `data:image/jpeg;base64,${res.data.img}`;
+              if (res.data.code == 500) {
+                  alert(res.data.msg);
+              } else {
+                  console.log(res);
+                  window.sessionStorage.setItem('uuid', res.data.uuid);
+                  document.getElementById("code").src = `data:image/jpeg;base64,${res.data.img}`;
+              }
           }).catch((error) => {
               alert(error.data.msg);
               console.log(error);
@@ -97,7 +101,7 @@
               data: data,
           }).then((res) => {
               console.log(res);
-              if (res.data.code === 500) {
+              if (res.data.code == 500) {
                   alert(res.data.msg);
               } else {
                   console.log(res);
@@ -109,8 +113,11 @@
           }).catch((error) => {
               getImage();
               console.log(error);
-              alert(error.data.msg);
-
+              if(error.data?.msg) {
+                  alert(error.data.msg);
+              } else {
+                  alert("账号密码错误")
+              }
           });
       }
   </script>
@@ -194,7 +201,7 @@
               request: function () {
                   $.get(httpRequest.requestVerification.path, {moveX: (moveX)}, function (data, status) {
                       console.log(data.code);
-                      if (data.code === 200) {
+                      if (data.code == 200) {
                           checkSuccessHandle();
                       } else {
                           checkFailHandle();

@@ -3,7 +3,6 @@ package com.example.demo.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
-
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
@@ -71,7 +70,7 @@ public class RedisCache {
     /**
      * 自增
      *
-     * @param key     Redis键
+     * @param key Redis键
      * @return true=设置成功；false=设置失败
      */
     public Long increment(final String key, final long count) {
@@ -163,8 +162,9 @@ public class RedisCache {
      * @param value
      * @return
      */
-    public long addCacheSet(final String key, final String value) {
-        return redisTemplate.opsForSet().add(key, value);
+    public long addAndGetSizeCacheSet(final String key, final String value) {
+        redisTemplate.opsForSet().add(key, value);
+        return redisTemplate.opsForSet().size(key);
     }
 
     /**
@@ -283,9 +283,9 @@ public class RedisCache {
     /**
      * 往zset中插入数据
      *
-     * @param key     Redis键
-     * @param value   Redis值
-     * @param time    过期时间
+     * @param key   Redis键
+     * @param value Redis值
+     * @param time  过期时间
      */
     public boolean addCacheZSet(final String key, String value, final long time) {
         return redisTemplate.opsForZSet().add(key, value, time + DateUtils.MILLIS_PER_DAY * 7);

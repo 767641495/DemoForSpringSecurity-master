@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * @program: DemoForSpringSecurity-master
@@ -84,7 +83,7 @@ public class UserController {
 
     @ApiOperation("注册用户")
     @PostMapping("/register")
-    public AjaxResult toRegister(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) throws IOException {
+    public AjaxResult toRegister(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) {
         String ip = IpUtils.getIpAddr(request);
         AjaxResult ajax = riskControl.judgeAndUpdateIp(ip);
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
@@ -96,7 +95,7 @@ public class UserController {
         }
 
         SysUser sysUser = new SysUser(username, password, phone);
-        if (!checkCode(inputCode, redisCache.getCacheObject(Constants.CAPTCHA_PHONE_KEY + uuid))) {
+        if (!checkCode(inputCode, uuid)) {
             return AjaxResult.error("验证码错误");
         }
         if (sysUserService.selectCountByUserName(username) > 0) {
@@ -113,8 +112,7 @@ public class UserController {
 
     @ApiOperation("校验手机验证码")
     public Boolean checkCode(@RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) {
-        //设置redis的key，这里设置为项目名:使用的字段:用户Id
-        String redisKey = Constants.CAPTCHA_CODE_KEY + uuid;
+        String redisKey = Constants.CAPTCHA_PHONE_KEY + uuid;
         String realCode = redisCache.getCacheObject(redisKey);
         if (realCode != null && realCode.equals(inputCode)) {
             log.info("验证码校验成功");

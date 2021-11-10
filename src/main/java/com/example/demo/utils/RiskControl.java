@@ -62,12 +62,11 @@ public class RiskControl {
         return AjaxResult.success(ip + "第" + num + "次访问");
     }
 
-    public AjaxResult judgeAndUpdatePhone(String ip, String phone) throws IOException {
+    public AjaxResult judgeAndUpdatePhone(String ip, String phone) {
         judgeIp(ip);
         String ipPhoneKey = Constants.IP_PHONE_PREFIX + ip;
-        Long cnt = redisCache.addCacheSet(ipPhoneKey, phone);
-        // 一个ip下绑定超过6台手机，增加一次违法次数
-        if (cnt > 6) {
+        // 一个ip下绑定超过10台手机，增加一次违法次数
+        if (redisCache.addAndGetSizeCacheSet(ipPhoneKey, phone) > 10) {
             return updateInfraction(ip);
         }
         return AjaxResult.success();
@@ -85,7 +84,7 @@ public class RiskControl {
             redisCache.addCacheZSet(Constants.TEMPORARY_ZSET, ip, System.currentTimeMillis() + DateUtils.MILLIS_PER_DAY * 7);
             return AjaxResult.error(ip + "已被封禁7天");
         } else if (infraction >= 7) {
-            redisCache.addCacheSet(Constants.BLACK_SET, ip);
+            redisCache.addAndGetSizeCacheSet(Constants.BLACK_SET, ip);
             return AjaxResult.error(ip + "已被永久封禁");
         }
         return AjaxResult.success();
