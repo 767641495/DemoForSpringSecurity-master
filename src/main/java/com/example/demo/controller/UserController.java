@@ -102,6 +102,7 @@ public class UserController {
             return AjaxResult.error(username + "账号已存在");
         }
         if (sysUserService.selectCountByPhone(phone) > 0) {
+            redisCache.deleteObject(Constants.CAPTCHA_PHONE_KEY + uuid);
             return AjaxResult.error(phone + "手机号已存在");
         }
         if (sysUserService.insertUser(sysUser)) {
