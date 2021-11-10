@@ -1,5 +1,7 @@
 package com.example.demo.pojo;
 
+import com.example.demo.utils.DateUtils;
+
 /**
  * @program: DemoForSpringSecurity-master
  * @description: 常量
@@ -7,8 +9,7 @@ package com.example.demo.pojo;
  * @create: 2021-09-02 17:23
  **/
 
-public class Constants
-{
+public class Constants {
     /**
      * UTF-8 字符集
      */
@@ -133,4 +134,29 @@ public class Constants
      * RMI 远程方法调用
      */
     public static final String LOOKUP_RMI = "rmi://";
+
+    /**
+     * ip访问次数前缀
+     */
+    public static final String VISIT_PREFIX = "visit-";
+
+    /**
+     * 违法次数前缀
+     */
+    public static final String INFRACTION_PREFIX = "infraction-";
+
+    /**
+     * ip临时黑名单
+     */
+    public static final String TEMPORARY_ZSET = "forbidden_ip_set";
+
+    /**
+     * ip永久黑名单
+     */
+    public static final String BLACK_SET = "black_set";
+
+    /**
+     * 单个ip下注册的手机号
+     */
+    public static final String IP_PHONE_PREFIX = "ip_phone";
 }

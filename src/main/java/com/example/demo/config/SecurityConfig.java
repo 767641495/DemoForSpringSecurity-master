@@ -1,29 +1,29 @@
 package com.example.demo.config;
 
-import com.alibaba.fastjson.JSONObject;
-import com.example.demo.filter.CaptchaFilter;
 import com.example.demo.filter.IPFilter;
-import com.example.demo.utils.MyAuthenticationFailureHandler;
-import com.example.demo.utils.MyAuthenticationSuccessHandler;
+import com.example.demo.filter.JwtAuthenticationTokenFilter;
+import com.example.demo.filter.MyCorsFilter;
+import com.example.demo.handler.MyAuthenticationFailureHandler;
+import com.example.demo.handler.MyAuthenticationSuccessHandler;
+import com.example.demo.handler.MyLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.io.PrintWriter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Autowired
     private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
@@ -32,7 +32,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
     @Autowired
-    private CaptchaFilter captchaFilter;
+    private MyLogoutSuccessHandler myLogoutSuccessHandler;
+
+    @Autowired
+    private MyAuthenticationProvider myAuthenticationProvider;
+
+    @Autowired
+    private MyCorsFilter myCorsFilter;
 
     @Autowired
     private IPFilter ipFilter;
@@ -57,33 +63,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //首页所有人可以访问，功能页有相应权限才能访问
         //链式编程
-
-
         http
-                .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class)
-                // 自定义表单认证
-                .formLogin()
-                // 登陆界面
-                .loginPage("/toLogin")
-                // 当发现/authentication/form 时认为是登录，需要执行 UserDetailsServiceImpl
-                .loginProcessingUrl("/authentication/form")
-                // 此处是 post 请求,参数是登录成功后跳转地址
-                .successForwardUrl("/toMain")
-                // .successHandler(myAuthenticationSuccessHandler).permitAll()
-                // 此处是 post 请求,参数是登录失败后跳转地址
-                .failureForwardUrl("/error")
-                .failureHandler(myAuthenticationFailureHandler).permitAll()
-                .and()
-                // 登出页面
-                .logout()
-                .logoutSuccessUrl("/toLogin")
-                // 登出时清空session
-                .invalidateHttpSession(true)
+                // 关闭 csrf 防护
+                .csrf().disable()
+                // 开启跨域
+                .cors()
                 .and()
                 // url 拦截
+                // .antMatcher("/swagger-ui/*").anonymous().and()
                 .authorizeRequests()
-                // 静态资源允许访问
+                .antMatchers(HttpMethod.GET, "/", "/toLogin", "/captchaImage", "/toRegister", "/captchaPhone", "/swagger-ui/**", "/toMain").anonymous()
+                .antMatchers(HttpMethod.POST, "/register", "/toLogin").anonymous()
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
@@ -95,21 +85,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/profile/**"
                 ).permitAll()
                 // 所有的请求都必须被认证。必须登录后才能访问。
-                // .anyRequest().authenticated()
+//                .anyRequest().authenticated()
                 .and()
-                //关闭 csrf 防护
-                .csrf().disable();
-
-        http
-                .sessionManagement()
-                .invalidSessionStrategy((httpServletRequest, httpServletResponse) -> {
-                    httpServletResponse.setContentType("application/json;charset=utf-8");
-                    PrintWriter out = httpServletResponse.getWriter();
-                    out.write(JSONObject.toJSONString("身份失效了"));
-                    out.flush();
-                    out.close();
-                }).maximumSessions(1);
-        //这个地方可以设置一个账号每次能几个人登录同时登录 将maximumSessions 去掉那就是没限制 这个方我默认的是一个账号每次都一个人登录
+                // 基于token，所以不需要session
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // 登出页面
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(myLogoutSuccessHandler)
+                .and()
+                .addFilterBefore(ipFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                // 添加CORS filter
+                .addFilterBefore(myCorsFilter, JwtAuthenticationTokenFilter.class)
+                .addFilterBefore(myCorsFilter, LogoutFilter.class);
     }
 
     /**
@@ -124,13 +113,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * 身份认证接口
      */
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth) {
+        // auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+        auth.authenticationProvider(myAuthenticationProvider);
     }
 
+    /**
+     * 解决 无法直接注入 AuthenticationManager
+     */
+    @Bean
     @Override
-    public void configure(WebSecurity web) {
-        //这个免拦截 能免 所有Security 中的拦截器  antMatchers(passUrls).permitAll() 这个免拦截 只是免当前拦截器
-        web.ignoring().antMatchers("/login.html");
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

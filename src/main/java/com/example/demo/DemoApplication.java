@@ -9,8 +9,6 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 
 @EnableOpenApi
 @SpringBootApplication
-// 60秒后redis中session失效
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 600)
 @MapperScan("com.example.demo.mapper")
 public class DemoApplication {
     public static void main(String[] args) {

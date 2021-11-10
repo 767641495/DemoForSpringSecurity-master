@@ -1,5 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+<script>
+    window.onload = function () {
+        // alert(`Bearer ${window.sessionStorage.getItem('token')}`);
+        axios({
+            method: 'post',
+            url: '/toMain',
+            headers: {
+                'Authorization': `Bearer ${window.sessionStorage.getItem('token')}`
+            }
+        }).then((res)=>{
+            console.log(res);
+        }).catch((err)=>{
+            console.log(err);
+
+
+
+
+            window.location.href='/toLogin';
+        })
+    }
+</script>
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
@@ -7,7 +28,33 @@
 <body>
 
 <h1>登陆成功</h1>
-<a href= "/logout">退出登录</a>
+<button id="delete">注销账号</button>
+<script>
+    document.getElementById("delete").onclick = function () {
+        axios({
+            method: 'post',
+            url: '/delete',
+            headers: {
+                'Authorization': `Bearer ${window.sessionStorage.getItem('token')}`
+            }
+        }).then((res)=>{
+            console.log(res);
+            alert("注销成功");
+            window.location.href='/toLogin';
+        }).catch((error)=>{
+            console.log((error));
+            if (error.response) {
+                alert("注销失败");
+                console.log(error.response.data);
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+        });
+    };
+</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
 </body>
 </html>

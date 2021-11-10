@@ -1,14 +1,20 @@
 package com.example.demo.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * 用户登录对象
+ * @program: DemoForSpringSecurity-master
+ * @description: 用户登陆对象
+ * @author: Riter
+ * @create: 2021-11-07 08:52
+ **/
 
- */
 @Data
-public class LoginBody
-{
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginBody {
     /**
      * 用户名
      */
@@ -27,6 +33,5 @@ public class LoginBody
     /**
      * 唯一标识
      */
-    private String uuid = "";
+    private String uuid;
 }
-

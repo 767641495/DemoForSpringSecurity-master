@@ -15,6 +15,9 @@ spring:
     url: jdbc:mysql://121.196.162.111:3306/springsecurity?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf-8
     username: user
     password: 123456
+#    url: jdbc:mysql://localhost:3306/springsecurity?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf-8
+#    username: root
+#    password: root
   thymeleaf:
     cache: false
     # redis 配置
@@ -24,7 +27,7 @@ spring:
     # 端口，默认为6379
     port: 6379
     # 密码
-    password:
+#    password: root
     # 连接超时时间
     timeout: 10s
     pool:
@@ -43,4 +46,13 @@ mybatis:
   typeAliasesPackage: com.example.**.domain
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
   mapperLocations: classpath*:mapper/**/*Mapper.xml
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
 
