@@ -70,7 +70,7 @@ public class CaptchaController {
         }
         // 保存验证码信息
         String uuid = UUID.randomUUID().toString();
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
+        String verifyKey = Constants.CAPTCHA_PHONE_KEY + uuid;
         // 生成随机字串
         String verifyCode = CaptchaUtils.generateMathCode(8);
         log.info("手机验证码：" + verifyCode);

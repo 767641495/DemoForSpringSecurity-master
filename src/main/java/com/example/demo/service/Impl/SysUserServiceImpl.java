@@ -5,7 +5,6 @@ import com.example.demo.mapper.SysUserMapper;
 import com.example.demo.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -56,4 +55,13 @@ public class SysUserServiceImpl implements ISysUserService {
         return sysUserMapper.updateUserProfile(userId, loginIp, loginDate);
     }
 
+    @Override
+    public int selectCountByUserName(String userName) {
+        return sysUserMapper.selectCountByUserName(userName);
+    }
+
+    @Override
+    public int selectCountByPhone(String phone) {
+        return sysUserMapper.selectCountByPhone(phone);
+    }
 }

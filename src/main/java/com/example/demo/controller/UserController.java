@@ -96,13 +96,19 @@ public class UserController {
         }
 
         SysUser sysUser = new SysUser(username, password, phone);
-        if (!checkCode(inputCode, uuid)) {
-            AjaxResult.error(sysUser.getUserName() + "验证码错误");
+        if (!checkCode(inputCode, redisCache.getCacheObject(Constants.CAPTCHA_PHONE_KEY + uuid))) {
+            return AjaxResult.error("验证码错误");
+        }
+        if (sysUserService.selectCountByUserName(username) > 0) {
+            return AjaxResult.error(username + "账号已存在");
+        }
+        if (sysUserService.selectCountByPhone(phone) > 0) {
+            return AjaxResult.error(phone + "手机号已存在");
         }
         if (sysUserService.insertUser(sysUser)) {
-            return AjaxResult.success(sysUser.getUserName() + "注册成功！");
+            return AjaxResult.success(username + "注册成功！");
         }
-        return AjaxResult.error(sysUser.getUserName() + "注册失败！");
+        return AjaxResult.error(username + "注册失败！");
     }
 
     @ApiOperation("校验手机验证码")

@@ -56,9 +56,14 @@ public class Constants {
     public static final String LOGIN_FAIL = "Error";
 
     /**
-     * 验证码 redis key
+     * 图片验证码 redis key
      */
-    public static final String CAPTCHA_CODE_KEY = "captcha_codes:";
+    public static final String CAPTCHA_CODE_KEY = "captcha_code:";
+
+    /**
+     * 手机验证码 redis key
+     */
+    public static final String CAPTCHA_PHONE_KEY = "captcha_phone_code:";
 
     /**
      * 登录用户 redis key

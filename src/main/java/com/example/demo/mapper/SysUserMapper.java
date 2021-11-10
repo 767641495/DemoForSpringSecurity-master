@@ -19,4 +19,8 @@ public interface SysUserMapper {
     boolean updatePasswordByUserName(@Param("userName") String userName,@Param("password") String password);
 
     boolean updateUserProfile(@Param("userId") Long userId, @Param("loginIp")  String loginIp, @Param("loginDate")  Date loginDate);
+
+    int selectCountByUserName(String userName);
+
+    int selectCountByPhone(String phone);
 }

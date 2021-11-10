@@ -55,4 +55,16 @@
             login_date = #{loginDate}
         where user_id = #{userId}
     </update>
+
+    <select id="selectCountByUserName" resultType="int">
+        select count(*)
+        from sysuser
+        where username = #{username};
+    </select>
+
+    <select id="selectCountByPhone" resultType="int">
+        select count(*)
+        from sysuser
+        where phone = #{phone};
+    </select>
 </mapper>

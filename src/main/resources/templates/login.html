@@ -194,7 +194,7 @@
               request: function () {
                   $.get(httpRequest.requestVerification.path, {moveX: (moveX)}, function (data, status) {
                       console.log(data.code);
-                      if (data.code == 200) {
+                      if (data.code === 200) {
                           checkSuccessHandle();
                       } else {
                           checkFailHandle();

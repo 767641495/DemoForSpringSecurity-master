@@ -7,6 +7,10 @@ import java.util.Date;
 public interface ISysUserService {
     SysUser selectUserByUserName(String userName);
 
+    int selectCountByUserName(String userName);
+
+    int selectCountByPhone(String phone);
+
     boolean insertUser(SysUser user);
 
     boolean deleteUserByUserName(String userName);
