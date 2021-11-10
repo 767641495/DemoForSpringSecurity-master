@@ -72,7 +72,7 @@ public class UserController {
         // 校验成功之后，从redis中移除验证码
         redisCache.deleteObject(redisKey);
 
-        ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
+        ajax = riskControl.judgeAndUpdateIp(IpUtils.getIpAddr(request));
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;
         }
@@ -86,11 +86,11 @@ public class UserController {
     @PostMapping("/register")
     public AjaxResult toRegister(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("phone") String phone, @RequestParam("inputCode") String inputCode, @RequestParam("uuid") String uuid) throws IOException {
         String ip = IpUtils.getIpAddr(request);
-        AjaxResult ajax = riskControl.updateAndJudgeIp(ip);
+        AjaxResult ajax = riskControl.judgeAndUpdateIp(ip);
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;
         }
-        ajax = riskControl.updatePhoneToIP(ip, phone);
+        ajax = riskControl.judgeAndUpdatePhone(ip, phone);
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;
         }

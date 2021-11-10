@@ -28,6 +28,8 @@ public class RiskControl {
         String black_key = Constants.BLACK_SET;
         String visit_key = Constants.VISIT_PREFIX + ip;
 
+        // 删除过期数据
+        redisCache.zRemRangeByScore(temporary_key,0,System.currentTimeMillis());
         num = redisCache.getCacheObject(visit_key);
         this.blackSet = redisCache.getCacheSet(black_key);
         Set<String> temporarySet = redisCache.getCacheZSet(temporary_key, 0, System.currentTimeMillis() + DateUtils.MILLIS_PER_DAY * 7);
@@ -39,7 +41,7 @@ public class RiskControl {
         return AjaxResult.success();
     }
 
-    public AjaxResult updateAndJudgeIp(String ip) {
+    public AjaxResult judgeAndUpdateIp(String ip) {
         judgeIp(ip);
 
         String visit_key = Constants.VISIT_PREFIX + ip;
@@ -47,15 +49,20 @@ public class RiskControl {
             redisCache.setCacheObject(visit_key, 1, 60, TimeUnit.SECONDS);
             num = 1;
         } else if (num >= MAX_VISIT_COUNT) {
+            // 临时封禁1分钟
+            redisCache.addCacheZSet(Constants.TEMPORARY_ZSET, ip, System.currentTimeMillis() + DateUtils.MILLIS_PER_MINUTE );
+            // 增加违法次数
             updateInfraction(ip);
-            return AjaxResult.error("访问频繁,一分钟只能访问" + MAX_VISIT_COUNT + "次");
+            // 重置访问次数
+            redisCache.deleteObject(visit_key);
+            return AjaxResult.error("访问频繁,一分钟只能访问" + MAX_VISIT_COUNT + "次," + "您已被封禁1分钟！");
         } else {
             redisCache.increment(visit_key, 1);
         }
         return AjaxResult.success(ip + "第" + num + "次访问");
     }
 
-    public AjaxResult updatePhoneToIP(String ip, String phone) throws IOException {
+    public AjaxResult judgeAndUpdatePhone(String ip, String phone) throws IOException {
         judgeIp(ip);
         String ipPhoneKey = Constants.IP_PHONE_PREFIX + ip;
         Long cnt = redisCache.addCacheSet(ipPhoneKey, phone);

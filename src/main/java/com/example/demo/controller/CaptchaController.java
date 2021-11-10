@@ -8,15 +8,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +36,7 @@ public class CaptchaController {
     @ApiOperation("图片验证码生成")
     @GetMapping(value = "/captchaImage")
     public AjaxResult getPhotoCaptcha(HttpServletRequest request) throws IOException {
-        AjaxResult ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
+        AjaxResult ajax = riskControl.judgeAndUpdateIp(IpUtils.getIpAddr(request));
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;
         }
@@ -65,7 +61,7 @@ public class CaptchaController {
     @ApiOperation("手机验证码生成")
     @GetMapping(value = "/captchaPhone")
     public AjaxResult getPhoneCaptcha(HttpServletRequest request, @RequestParam("phone") String phone) {
-        AjaxResult ajax = riskControl.updateAndJudgeIp(IpUtils.getIpAddr(request));
+        AjaxResult ajax = riskControl.judgeAndUpdateIp(IpUtils.getIpAddr(request));
         if (StringUtils.equals(ajax.get("code").toString(), String.valueOf(HttpStatus.ERROR))) {
             return ajax;
         }
