@@ -32,7 +32,7 @@ public class SliderController {
         AjaxResult ajax = AjaxResult.success();
         String infraction_key = Constants.INFRACTION_PREFIX + IpUtils.getIpAddr(request);
         Integer infraction = redisCache.getCacheObject(infraction_key);
-        if (infraction != null && infraction >= 3 && infraction < 5) {
+        if (infraction != null && infraction > 0) {
             ajax.put(Constants.CAPTCHA_FLAG, true);
         } else {
             ajax.put(Constants.CAPTCHA_FLAG, false);

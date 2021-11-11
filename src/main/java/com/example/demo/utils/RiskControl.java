@@ -6,10 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @program: DemoForSpringSecurity-master
+ * @description: 风控工具类
+ * @author: Riter
+ * @create: 2021-11-04 20:01
+ **/
 @Slf4j
 @Component
 public class RiskControl {
@@ -80,7 +85,7 @@ public class RiskControl {
         }
         // 违法次数
         Long infraction = redisCache.increment(infraction_key, 1);
-        if (infraction >= 5 && infraction < 7) {
+        if (infraction >= 3 && infraction < 7) {
             redisCache.addCacheZSet(Constants.TEMPORARY_ZSET, ip, System.currentTimeMillis() + DateUtils.MILLIS_PER_DAY * 7);
             return AjaxResult.error(ip + "已被封禁7天");
         } else if (infraction >= 7) {

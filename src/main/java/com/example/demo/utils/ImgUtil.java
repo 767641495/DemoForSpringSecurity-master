@@ -16,7 +16,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-
+/**
+ * @program: DemoForSpringSecurity-master
+ * @description: 滑块图片工具类
+ * @author: Riter
+ * @create: 2021-11-07 07:45
+ **/
 @Slf4j
 public class ImgUtil {
     //图片的路径

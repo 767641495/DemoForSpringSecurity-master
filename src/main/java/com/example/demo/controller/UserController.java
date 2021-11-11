@@ -5,17 +5,11 @@ import com.example.demo.pojo.*;
 import com.example.demo.service.ISysUserService;
 import com.example.demo.service.SysLoginService;
 import com.example.demo.service.TokenService;
-import com.example.demo.utils.IpUtils;
-import com.example.demo.utils.RedisCache;
-import com.example.demo.utils.RiskControl;
-import com.example.demo.utils.StringUtils;
+import com.example.demo.utils.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -133,5 +127,12 @@ public class UserController {
             return AjaxResult.success("删除成功！");
         }
         return AjaxResult.error("删除失败！");
+    }
+
+    @ApiOperation("获取信息")
+    @GetMapping("/printInfo")
+    public AjaxResult getInfo(HttpServletRequest request) {
+        UserAgentUtils.printAll(request);
+        return AjaxResult.success();
     }
 }
